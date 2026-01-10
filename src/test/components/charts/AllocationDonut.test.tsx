@@ -71,11 +71,15 @@ describe('AllocationDonut', () => {
 	});
 
 	it('should handle empty data', () => {
-		render(<AllocationDonut data={{}} />);
+		const { container } = render(<AllocationDonut data={{}} />);
 
-		// Should render but with no items
-		const container = screen.getByRole('generic');
-		expect(container).toBeInTheDocument();
+		// Should render but with no items in the legend (empty chartData array)
+		const chartContainer = container.querySelector('.flex.items-center.gap-6');
+		expect(chartContainer).toBeInTheDocument();
+		
+		// No legend items should be present
+		const legendItems = container.querySelectorAll('.space-y-2 > div');
+		expect(legendItems.length).toBe(0);
 	});
 
 	it('should handle undefined values in data', () => {

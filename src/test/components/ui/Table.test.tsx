@@ -31,7 +31,7 @@ describe('Table', () => {
 				<TableFooter>
 					<TableRow>
 						<TableCell>Total</TableCell>
-						<TableCell>100</TableCell>
+						<TableCell>200</TableCell>
 					</TableRow>
 				</TableFooter>
 			</Table>
@@ -41,8 +41,9 @@ describe('Table', () => {
 		expect(screen.getByText('Name')).toBeInTheDocument();
 		expect(screen.getByText('Value')).toBeInTheDocument();
 		expect(screen.getByText('Test')).toBeInTheDocument();
-		expect(screen.getByText('100')).toBeInTheDocument();
+		expect(screen.getAllByText('100')[0]).toBeInTheDocument();
 		expect(screen.getByText('Total')).toBeInTheDocument();
+		expect(screen.getByText('200')).toBeInTheDocument();
 	});
 
 	it('should apply custom className', () => {

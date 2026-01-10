@@ -132,12 +132,11 @@ describe('AuditLog', () => {
 			expect(log.timestamp).toBe('2026-01-28T10:00:00Z');
 		});
 
-		it('should throw error for invalid data', () => {
-			// This should not happen in practice since we're creating valid logs
-			// But we test the validation
+		it('should throw error for invalid event type', () => {
+			// createAuditLog validates internally and throws for invalid data
 			expect(() => {
 				createAuditLog('invalid_type' as AuditLogEventType, 'Test');
-			}).not.toThrow(); // createAuditLog will validate internally
+			}).toThrow('Invalid AuditLog data');
 		});
 	});
 

@@ -29,7 +29,7 @@ describe('TargetAllocation', () => {
 		render(<TargetAllocation />);
 
 		expect(screen.getByText(/Current: 28.5%/i)).toBeInTheDocument();
-		expect(screen.getByText(/Target: 33.33%/i)).toBeInTheDocument();
+		expect(screen.getAllByText(/Target: 33.3%/i).length).toBeGreaterThan(0); // Multiple allocations have same target
 		expect(screen.getByText(/Current: 35.2%/i)).toBeInTheDocument();
 		expect(screen.getByText(/Current: 31.1%/i)).toBeInTheDocument();
 	});

@@ -13,10 +13,11 @@ describe('ProposedTrades', () => {
 	it('should render all trades', () => {
 		render(<ProposedTrades />);
 
-		expect(screen.getByText('Buy')).toBeInTheDocument();
-		expect(screen.getByText('Sell')).toBeInTheDocument();
-		expect(screen.getAllByText('Buy').length).toBeGreaterThan(0);
-		expect(screen.getAllByText('Sell').length).toBeGreaterThan(0);
+		const buyElements = screen.getAllByText('Buy');
+		const sellElements = screen.getAllByText('Sell');
+		
+		expect(buyElements.length).toBeGreaterThan(0);
+		expect(sellElements.length).toBeGreaterThan(0);
 	});
 
 	it('should render trade tickers', () => {

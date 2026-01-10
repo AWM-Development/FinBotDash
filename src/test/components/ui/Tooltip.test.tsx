@@ -26,7 +26,7 @@ describe('Tooltip', () => {
 		const user = userEvent.setup();
 
 		render(
-			<TooltipProvider>
+			<TooltipProvider delayDuration={0}>
 				<Tooltip>
 					<TooltipTrigger>Hover me</TooltipTrigger>
 					<TooltipContent>Tooltip content</TooltipContent>
@@ -37,8 +37,15 @@ describe('Tooltip', () => {
 		const trigger = screen.getByText('Hover me');
 		await user.hover(trigger);
 
-		await waitFor(() => {
-			expect(screen.getByText('Tooltip content')).toBeInTheDocument();
-		});
+		// Tooltip content is in the DOM but may be visually hidden
+		// Check that the tooltip content exists in the document
+		await waitFor(
+			() => {
+				const tooltip = document.querySelector('[role="tooltip"]');
+				expect(tooltip).toBeInTheDocument();
+				expect(tooltip?.textContent).toBe('Tooltip content');
+			},
+			{ timeout: 2000 }
+		);
 	});
 });

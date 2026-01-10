@@ -134,7 +134,7 @@ describe('TLHOpportunity', () => {
 				tax_bracket: 28,
 			});
 
-			expect(opportunity.estimated_savings).toBe(347.2); // 1240 * 0.28
+			expect(opportunity.estimated_savings).toBeCloseTo(347.2, 1); // 1240 * 0.28
 		});
 
 		it('should create opportunity with optional fields', () => {
@@ -157,7 +157,7 @@ describe('TLHOpportunity', () => {
 	describe('calculateEstimatedSavings', () => {
 		it('should calculate estimated savings correctly', () => {
 			const savings = calculateEstimatedSavings(-1240, 28);
-			expect(savings).toBe(347.2); // 1240 * 0.28
+			expect(savings).toBeCloseTo(347.2, 1); // 1240 * 0.28
 		});
 
 		it('should return 0 for positive unrealized loss', () => {

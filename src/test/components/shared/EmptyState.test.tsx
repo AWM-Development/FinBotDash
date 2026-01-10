@@ -25,9 +25,9 @@ describe('EmptyState', () => {
 	});
 
 	it('should render with custom icon', () => {
-		render(<EmptyState icon={DollarSign} />);
+		const { container } = render(<EmptyState icon={DollarSign} />);
 
-		const icon = screen.getByRole('img', { hidden: true }) || document.querySelector('svg');
+		const icon = container.querySelector('svg');
 		expect(icon).toBeInTheDocument();
 	});
 
