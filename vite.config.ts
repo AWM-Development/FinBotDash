@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   plugins: [
     react({
-      include: /\.(jsx|js)$/,
+      include: /\.(tsx|ts|jsx|js)$/,
     }),
   ],
   optimizeDeps: {
@@ -25,4 +25,3 @@ export default defineConfig({
     },
   },
 })
-

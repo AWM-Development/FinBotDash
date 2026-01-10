@@ -13,7 +13,16 @@ import Settings from '../Pages/Settings'
 
 function AppRoutes() {
   const location = useLocation()
-  const currentPageName = location.pathname.split('/').pop() || 'Dashboard'
+  const currentPageName = (location.pathname.split('/').pop() || 'Dashboard') as
+    | 'Dashboard'
+    | 'Signals'
+    | 'RebalancePacket'
+    | 'Portfolio'
+    | 'Performance'
+    | 'Risk'
+    | 'TaxTLH'
+    | 'LogsAudit'
+    | 'Settings'
 
   return (
     <Routes>
@@ -40,4 +49,3 @@ function App() {
 }
 
 export default App
-

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "./utils";
+import { createPageUrl, type PageName } from "./utils";
 import {
 	LayoutDashboard,
 	Signal,
@@ -14,10 +14,9 @@ import {
 	Bell,
 	ChevronDown,
 	Menu,
-	X,
-	CheckCircle,
 	AlertTriangle,
-	HelpCircle
+	HelpCircle,
+	type LucideIcon,
 } from "lucide-react";
 import {
 	DropdownMenu,
@@ -34,7 +33,13 @@ import {
 } from "@/components/ui/sheet";
 import HelpDrawer from "@/components/help/HelpDrawer";
 
-const navItems = [
+interface NavItem {
+	name: string;
+	icon: LucideIcon;
+	page: PageName;
+}
+
+const navItems: NavItem[] = [
 	{ name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
 	{ name: "Signals", icon: Signal, page: "Signals" },
 	{ name: "Rebalance Packet", icon: FileText, page: "RebalancePacket" },
@@ -46,17 +51,32 @@ const navItems = [
 	{ name: "Settings", icon: Settings, page: "Settings" },
 ];
 
-const strategies = [
+interface Strategy {
+	id: string;
+	name: string;
+	status: "active" | "paper";
+}
+
+const strategies: Strategy[] = [
 	{ id: "baseline-v1", name: "Baseline v1", status: "active" },
 	{ id: "paper", name: "Paper Trading", status: "paper" },
 	{ id: "tax-optimized", name: "Tax-Optimized", status: "active" },
 ];
 
-export default function Layout({ children, currentPageName }) {
-	const [selectedStrategy, setSelectedStrategy] = useState(strategies[0]);
+interface LayoutProps {
+	children: React.ReactNode;
+	currentPageName: PageName;
+}
+
+interface SidebarProps {
+	mobile?: boolean;
+}
+
+export default function Layout({ children, currentPageName }: LayoutProps) {
+	const [selectedStrategy, setSelectedStrategy] = useState<Strategy>(strategies[0]);
 	const [mobileOpen, setMobileOpen] = useState(false);
 
-	const Sidebar = ({ mobile = false }) => (
+	const Sidebar = ({ mobile = false }: SidebarProps) => (
 		<div className={`flex flex-col h-full ${mobile ? "" : "w-64"}`}>
 			<div className="p-6 border-b border-slate-200">
 				<h1 className="text-xl font-semibold text-slate-900 tracking-tight">
@@ -68,6 +88,7 @@ export default function Layout({ children, currentPageName }) {
 			<nav className="flex-1 p-4 space-y-1 overflow-y-auto">
 				{navItems.map((item) => {
 					const isActive = currentPageName === item.page;
+					const IconComponent = item.icon;
 					return (
 						<Link
 							key={item.name}
@@ -78,7 +99,7 @@ export default function Layout({ children, currentPageName }) {
 								: "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
 								}`}
 						>
-							<item.icon className={`w-[18px] h-[18px] ${isActive ? "text-indigo-600" : "text-slate-400"}`} />
+							<IconComponent className={`w-[18px] h-[18px] ${isActive ? "text-indigo-600" : "text-slate-400"}`} />
 							{item.name}
 							{item.name === "Rebalance Packet" && (
 								<Badge className="ml-auto bg-amber-100 text-amber-700 hover:bg-amber-100 text-[10px] px-1.5">
