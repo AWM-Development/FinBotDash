@@ -7,7 +7,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      include: /\.(jsx|js)$/,
+    }),
+  ],
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        '.js': 'jsx',
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './'),
