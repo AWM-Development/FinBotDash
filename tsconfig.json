@@ -23,13 +23,16 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@/components/*": ["./Components/*"],
+      "@/pages/*": ["./Pages/*"]
     },
+    "forceConsistentCasingInFileNames": false,
 
     /* Types */
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["src", "**/*.ts", "**/*.tsx"],
+  "include": ["src", "**/*.ts", "**/*.tsx", "Components/**/*", "Pages/**/*", "Layout.tsx", "Entities/**/*"],
   "exclude": ["node_modules", "dist"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
