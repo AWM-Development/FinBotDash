@@ -3,12 +3,19 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Activity, Shield, RefreshCw } from "lucide-react";
 
+interface TodayStatusProps {
+	nextRebalance?: string;
+	regime?: string;
+	riskPosture?: string;
+	dataFreshness?: string;
+}
+
 export default function TodayStatus({
 	nextRebalance = "Feb 3, 2026",
 	regime = "Choppy Risk-On",
 	riskPosture = "Neutral",
 	dataFreshness = "today 4:00pm ET"
-}) {
+}: TodayStatusProps) {
 	return (
 		<Card className="p-5 bg-white border-slate-200">
 			<h3 className="text-sm font-semibold text-slate-900 mb-4">Today's Status</h3>

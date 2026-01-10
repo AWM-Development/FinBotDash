@@ -2,12 +2,27 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import AllocationDonut from "@/components/charts/AllocationDonut";
 
+interface AllocationData {
+	equity?: number;
+	bonds?: number;
+	real_assets?: number;
+	cash?: number;
+	[key: string]: number | undefined;
+}
+
+interface PortfolioSnapshotProps {
+	totalValue?: number;
+	cashPercent?: number;
+	holdingsCount?: number;
+	allocation?: AllocationData;
+}
+
 export default function PortfolioSnapshot({
 	totalValue = 125420,
 	cashPercent = 5.2,
 	holdingsCount = 4,
 	allocation = { equity: 62.5, bonds: 25.3, real_assets: 7.0, cash: 5.2 }
-}) {
+}: PortfolioSnapshotProps) {
 	return (
 		<Card className="p-5 bg-white border-slate-200">
 			<h3 className="text-sm font-semibold text-slate-900 mb-4">Portfolio Snapshot</h3>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, TrendingDown } from "lucide-react";
@@ -9,11 +9,22 @@ import {
 	Tooltip
 } from "recharts";
 
-const mockSparkline = Array.from({ length: 30 }, (_, i) => ({
+interface SparklineDataPoint {
+	value: number;
+}
+
+interface PerformanceData {
+	[key: string]: {
+		value: number;
+		trend: "up" | "down";
+	};
+}
+
+const mockSparkline: SparklineDataPoint[] = Array.from({ length: 30 }, (_, i) => ({
 	value: 100000 + Math.random() * 25000 + i * 500
 }));
 
-const performanceData = {
+const performanceData: PerformanceData = {
 	"1M": { value: 2.4, trend: "up" },
 	"3M": { value: 5.8, trend: "up" },
 	"YTD": { value: 8.2, trend: "up" },
@@ -21,11 +32,29 @@ const performanceData = {
 	"Since inception": { value: 45.3, trend: "up" }
 };
 
+interface TooltipProps {
+	active?: boolean;
+	payload?: Array<{
+		value: number;
+	}>;
+}
+
 export default function PerformanceSummary() {
-	const [selectedPeriod, setSelectedPeriod] = useState("YTD");
-	const [benchmark, setBenchmark] = useState("SPY");
+	const [selectedPeriod, setSelectedPeriod] = useState<string>("YTD");
+	const [benchmark, setBenchmark] = useState<string>("SPY");
 
 	const periods = Object.keys(performanceData);
+
+	const CustomTooltip = ({ active, payload }: TooltipProps) => {
+		if (active && payload && payload.length) {
+			return (
+				<div className="bg-slate-900 text-white px-2 py-1 rounded text-xs">
+					${payload[0].value.toLocaleString()}
+				</div>
+			);
+		}
+		return null;
+	};
 
 	return (
 		<Card className="p-5 bg-white border-slate-200">
@@ -49,18 +78,7 @@ export default function PerformanceSummary() {
 			<div className="h-20 mb-4">
 				<ResponsiveContainer width="100%" height="100%">
 					<LineChart data={mockSparkline}>
-						<Tooltip
-							content={({ active, payload }) => {
-								if (active && payload && payload.length) {
-									return (
-										<div className="bg-slate-900 text-white px-2 py-1 rounded text-xs">
-											${payload[0].value.toLocaleString()}
-										</div>
-									);
-								}
-								return null;
-							}}
-						/>
+						<Tooltip content={<CustomTooltip />} />
 						<Line
 							type="monotone"
 							dataKey="value"

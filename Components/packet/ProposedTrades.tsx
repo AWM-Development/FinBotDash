@@ -11,7 +11,16 @@ import {
 } from "@/components/ui/table";
 import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 
-const trades = [
+interface Trade {
+	action: "Buy" | "Sell";
+	ticker: string;
+	amount: number;
+	shares: number;
+	reason: string;
+	notes: string;
+}
+
+const trades: Trade[] = [
 	{
 		action: "Buy",
 		ticker: "QQQ",
@@ -38,7 +47,7 @@ const trades = [
 	},
 ];
 
-const reasonColors = {
+const reasonColors: Record<string, string> = {
 	Rebalance: "bg-slate-100 text-slate-700",
 	"Regime shift": "bg-amber-100 text-amber-700",
 	"Risk scaling": "bg-blue-100 text-blue-700",
@@ -90,7 +99,7 @@ export default function ProposedTrades() {
 								~{trade.shares}
 							</TableCell>
 							<TableCell>
-								<Badge className={reasonColors[trade.reason]}>
+								<Badge className={reasonColors[trade.reason] || "bg-slate-100 text-slate-700"}>
 									{trade.reason}
 								</Badge>
 							</TableCell>

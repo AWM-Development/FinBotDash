@@ -1,6 +1,17 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, type LucideIcon } from "lucide-react";
+
+interface MetricCardProps {
+	title: string;
+	value: string;
+	change?: string;
+	changeLabel?: string;
+	icon?: LucideIcon;
+	trend?: "up" | "down" | "neutral";
+	subtitle?: string;
+	className?: string;
+}
 
 export default function MetricCard({
 	title,
@@ -11,8 +22,8 @@ export default function MetricCard({
 	trend,
 	subtitle,
 	className = ""
-}) {
-	const getTrendColor = () => {
+}: MetricCardProps) {
+	const getTrendColor = (): string => {
 		if (trend === "up") return "text-emerald-600";
 		if (trend === "down") return "text-rose-600";
 		return "text-slate-500";

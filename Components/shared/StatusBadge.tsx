@@ -1,8 +1,13 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, AlertTriangle, Clock, XCircle, TrendingUp, TrendingDown } from "lucide-react";
+import { CheckCircle, AlertTriangle, Clock, XCircle, TrendingUp, TrendingDown, type LucideIcon } from "lucide-react";
 
-const statusConfig = {
+interface StatusConfig {
+	className: string;
+	icon: LucideIcon;
+}
+
+const statusConfig: Record<string, StatusConfig> = {
 	eligible: {
 		className: "bg-emerald-50 text-emerald-700 border-emerald-200",
 		icon: CheckCircle
@@ -53,8 +58,14 @@ const statusConfig = {
 	}
 };
 
-export default function StatusBadge({ status, showIcon = true, className = "" }) {
-	const config = statusConfig[status?.toLowerCase()] || statusConfig.pending;
+interface StatusBadgeProps {
+	status?: string;
+	showIcon?: boolean;
+	className?: string;
+}
+
+export default function StatusBadge({ status, showIcon = true, className = "" }: StatusBadgeProps) {
+	const config = statusConfig[status?.toLowerCase() || ""] || statusConfig.pending;
 	const Icon = config.icon;
 
 	return (
@@ -63,7 +74,7 @@ export default function StatusBadge({ status, showIcon = true, className = "" })
 			className={`${config.className} border font-medium gap-1 ${className}`}
 		>
 			{showIcon && <Icon className="w-3 h-3" />}
-			{status?.charAt(0).toUpperCase() + status?.slice(1).replace(/-/g, ' ')}
+			{status ? status.charAt(0).toUpperCase() + status.slice(1).replace(/-/g, ' ') : "Pending"}
 		</Badge>
 	);
 }

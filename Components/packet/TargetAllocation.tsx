@@ -1,7 +1,14 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 
-const allocations = [
+interface Allocation {
+	ticker: string;
+	name: string;
+	target: number;
+	current: number;
+}
+
+const allocations: Allocation[] = [
 	{ ticker: "QQQ", name: "Nasdaq 100", target: 33.33, current: 28.5 },
 	{ ticker: "SPY", name: "S&P 500", target: 33.33, current: 35.2 },
 	{ ticker: "VNQ", name: "Real Estate", target: 33.33, current: 31.1 },

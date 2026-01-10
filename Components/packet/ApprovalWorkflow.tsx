@@ -14,11 +14,15 @@ import {
 } from "@/components/ui/dialog";
 import { Check, FileCheck, Download, AlertTriangle, MessageSquare, Clock, User } from "lucide-react";
 
-export default function ApprovalWorkflow({ status = "pending" }) {
-	const [currentStatus, setCurrentStatus] = useState(status);
-	const [notes, setNotes] = useState("");
-	const [deviationReason, setDeviationReason] = useState("");
-	const [showDeviation, setShowDeviation] = useState(false);
+interface ApprovalWorkflowProps {
+	status?: "pending" | "reviewed" | "approved";
+}
+
+export default function ApprovalWorkflow({ status = "pending" }: ApprovalWorkflowProps) {
+	const [currentStatus, setCurrentStatus] = useState<"pending" | "reviewed" | "approved">(status);
+	const [notes, setNotes] = useState<string>("");
+	const [deviationReason, setDeviationReason] = useState<string>("");
+	const [showDeviation, setShowDeviation] = useState<boolean>(false);
 
 	const handleReview = () => {
 		setCurrentStatus("reviewed");
