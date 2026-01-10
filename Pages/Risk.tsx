@@ -11,9 +11,26 @@ import { Info, TrendingUp, TrendingDown, AlertTriangle, Shield, Activity } from 
 import MetricCard from "@/components/shared/MetricCard";
 import DrawdownChart from "@/components/charts/DrawdownChart";
 
+interface DrawdownDataPoint {
+	date: string;
+	drawdown: number;
+}
+
+interface RegimeHistoryItem {
+	date: string;
+	regime: string;
+	volatility: number;
+}
+
+interface RiskEvent {
+	date: string;
+	event: string;
+	severity: "warning" | "info" | "alert";
+}
+
 // Generate mock drawdown data
-const generateDrawdownData = () => {
-	const data = [];
+const generateDrawdownData = (): DrawdownDataPoint[] => {
+	const data: DrawdownDataPoint[] = [];
 	let peak = 100000;
 	let current = 100000;
 	const startDate = new Date(2024, 0, 1);
@@ -38,7 +55,7 @@ const generateDrawdownData = () => {
 
 const drawdownData = generateDrawdownData();
 
-const regimeHistory = [
+const regimeHistory: RegimeHistoryItem[] = [
 	{ date: "Jan 2026", regime: "Risk-On", volatility: 12.5 },
 	{ date: "Dec 2025", regime: "Choppy", volatility: 18.2 },
 	{ date: "Nov 2025", regime: "Choppy", volatility: 16.8 },
@@ -46,7 +63,7 @@ const regimeHistory = [
 	{ date: "Sep 2025", regime: "Risk-Off", volatility: 22.5 },
 ];
 
-const riskEvents = [
+const riskEvents: RiskEvent[] = [
 	{ date: "Dec 15, 2025", event: "Volatility spike detected; exposure scaled to 85%", severity: "warning" },
 	{ date: "Nov 28, 2025", event: "Regime shifted from Risk-On to Choppy", severity: "info" },
 	{ date: "Sep 20, 2025", event: "Max drawdown threshold triggered defensive mode", severity: "alert" },

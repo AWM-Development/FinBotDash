@@ -24,12 +24,42 @@ import {
 	CheckCircle,
 	Calendar,
 	TrendingUp,
-	TrendingDown
+	TrendingDown,
+	type LucideIcon
 } from "lucide-react";
 import MetricCard from "@/components/shared/MetricCard";
 import EmptyState from "@/components/shared/EmptyState";
 
-const tlhOpportunities = [
+interface TLHOpportunity {
+	id: number;
+	ticker: string;
+	unrealizedLoss: number;
+	replacement: string;
+	estimatedSavings: number;
+	status: "available" | "added";
+}
+
+interface WashSaleRestriction {
+	ticker: string;
+	soldDate: string;
+	endDate: string;
+	daysRemaining: number;
+}
+
+interface RealizedGainsLosses {
+	shortTerm: number;
+	longTerm: number;
+	net: number;
+}
+
+interface HoldingsBreakdown {
+	ticker: string;
+	value: number;
+	shortTerm: number;
+	longTerm: number;
+}
+
+const tlhOpportunities: TLHOpportunity[] = [
 	{
 		id: 1,
 		ticker: "VTI",
@@ -40,27 +70,27 @@ const tlhOpportunities = [
 	},
 ];
 
-const washSaleRestrictions = [
+const washSaleRestrictions: WashSaleRestriction[] = [
 	{ ticker: "SPY", soldDate: "Jan 15, 2026", endDate: "Feb 14, 2026", daysRemaining: 17 },
 ];
 
-const realizedGainsLosses = {
+const realizedGainsLosses: Record<string, RealizedGainsLosses> = {
 	2025: { shortTerm: 850, longTerm: -420, net: 430 },
 	2024: { shortTerm: 1200, longTerm: 3500, net: 4700 },
 };
 
-const holdingsBreakdown = [
+const holdingsBreakdown: HoldingsBreakdown[] = [
 	{ ticker: "QQQ", value: 43520, shortTerm: 15200, longTerm: 28320 },
 	{ ticker: "SPY", value: 44160, shortTerm: 8500, longTerm: 35660 },
 	{ ticker: "VNQ", value: 31080, shortTerm: 31080, longTerm: 0 },
 ];
 
 export default function TaxTLH() {
-	const [opportunities, setOpportunities] = useState(tlhOpportunities);
+	const [opportunities, setOpportunities] = useState<TLHOpportunity[]>(tlhOpportunities);
 
-	const addToPacket = (id) => {
+	const addToPacket = (id: number) => {
 		setOpportunities(prev =>
-			prev.map(op => op.id === id ? { ...op, status: "added" } : op)
+			prev.map(op => op.id === id ? { ...op, status: "added" as const } : op)
 		);
 	};
 

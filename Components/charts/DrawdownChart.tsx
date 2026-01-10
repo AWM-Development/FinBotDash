@@ -9,8 +9,26 @@ import {
 	ResponsiveContainer
 } from "recharts";
 
-export default function DrawdownChart({ data, height = 200 }) {
-	const CustomTooltip = ({ active, payload, label }) => {
+interface DrawdownDataPoint {
+	date: string;
+	drawdown: number;
+}
+
+interface DrawdownChartProps {
+	data: DrawdownDataPoint[];
+	height?: number;
+}
+
+interface TooltipProps {
+	active?: boolean;
+	payload?: Array<{
+		value: number;
+	}>;
+	label?: string;
+}
+
+export default function DrawdownChart({ data, height = 200 }: DrawdownChartProps) {
+	const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
 		if (active && payload && payload.length) {
 			return (
 				<div className="bg-white px-4 py-3 rounded-lg shadow-lg border border-slate-200">

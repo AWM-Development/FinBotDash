@@ -19,9 +19,25 @@ import { Info } from "lucide-react";
 import MetricCard from "@/components/shared/MetricCard";
 import EquityCurve from "@/components/charts/EquityCurve";
 
+interface EquityDataPoint {
+	date: string;
+	portfolio: number;
+	benchmark: number;
+}
+
+interface CalendarReturns {
+	[key: string]: number | null;
+}
+
+interface WorstMonth {
+	date: string;
+	return: number;
+	benchmark: number;
+}
+
 // Generate mock equity curve data
-const generateEquityData = () => {
-	const data = [];
+const generateEquityData = (): EquityDataPoint[] => {
+	const data: EquityDataPoint[] = [];
 	let portfolioValue = 100000;
 	let benchmarkValue = 100000;
 	const startDate = new Date(2022, 0, 1);
@@ -48,20 +64,20 @@ const generateEquityData = () => {
 const equityData = generateEquityData();
 
 // Calendar returns mock data
-const calendarReturns = {
+const calendarReturns: Record<string, CalendarReturns> = {
 	2024: { Jan: 2.1, Feb: 1.8, Mar: -0.5, Apr: 3.2, May: 1.4, Jun: -1.2, Jul: 2.8, Aug: -0.8, Sep: 1.5, Oct: 2.1, Nov: 3.4, Dec: 1.9 },
 	2025: { Jan: 2.4, Feb: null, Mar: null, Apr: null, May: null, Jun: null, Jul: null, Aug: null, Sep: null, Oct: null, Nov: null, Dec: null }
 };
 
-const worstMonths = [
+const worstMonths: WorstMonth[] = [
 	{ date: "Jun 2024", return: -1.2, benchmark: -0.8 },
 	{ date: "Aug 2024", return: -0.8, benchmark: -1.5 },
 	{ date: "Mar 2024", return: -0.5, benchmark: -0.3 },
 ];
 
 export default function Performance() {
-	const [benchmark, setBenchmark] = useState("SPY");
-	const [taxView, setTaxView] = useState("pre-tax");
+	const [benchmark, setBenchmark] = useState<string>("SPY");
+	const [taxView, setTaxView] = useState<"pre-tax" | "after-tax">("pre-tax");
 
 	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 

@@ -10,8 +10,30 @@ import {
 	Legend
 } from "recharts";
 
-export default function EquityCurve({ data, showBenchmark = true, height = 300 }) {
-	const CustomTooltip = ({ active, payload, label }) => {
+interface EquityDataPoint {
+	date: string;
+	portfolio: number;
+	benchmark?: number;
+}
+
+interface EquityCurveProps {
+	data: EquityDataPoint[];
+	showBenchmark?: boolean;
+	height?: number;
+}
+
+interface TooltipProps {
+	active?: boolean;
+	payload?: Array<{
+		name: string;
+		value: number;
+		color: string;
+	}>;
+	label?: string;
+}
+
+export default function EquityCurve({ data, showBenchmark = true, height = 300 }: EquityCurveProps) {
+	const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
 		if (active && payload && payload.length) {
 			return (
 				<div className="bg-white px-4 py-3 rounded-lg shadow-lg border border-slate-200">

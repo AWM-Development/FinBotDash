@@ -17,13 +17,23 @@ import {
 	CheckCircle,
 	AlertTriangle,
 	Search,
-	Filter,
 	MessageSquare,
 	Clock,
-	ArrowRight
+	type LucideIcon
 } from "lucide-react";
 
-const auditEvents = [
+interface AuditEvent {
+	id: number;
+	type: string;
+	description: string;
+	ticker: string | null;
+	month: string;
+	timestamp: string;
+	user: string;
+	notes: string | null;
+}
+
+const auditEvents: AuditEvent[] = [
 	{
 		id: 1,
 		type: "packet_approved",
@@ -96,7 +106,7 @@ const auditEvents = [
 	},
 ];
 
-const eventIcons = {
+const eventIcons: Record<string, LucideIcon> = {
 	packet_generated: FileText,
 	data_update: RefreshCw,
 	signals_changed: Activity,
@@ -105,7 +115,7 @@ const eventIcons = {
 	override_recorded: AlertTriangle,
 };
 
-const eventColors = {
+const eventColors: Record<string, string> = {
 	packet_generated: "bg-blue-100 text-blue-700",
 	data_update: "bg-slate-100 text-slate-700",
 	signals_changed: "bg-purple-100 text-purple-700",
@@ -115,9 +125,9 @@ const eventColors = {
 };
 
 export default function LogsAudit() {
-	const [search, setSearch] = useState("");
-	const [typeFilter, setTypeFilter] = useState("all");
-	const [monthFilter, setMonthFilter] = useState("all");
+	const [search, setSearch] = useState<string>("");
+	const [typeFilter, setTypeFilter] = useState<string>("all");
+	const [monthFilter, setMonthFilter] = useState<string>("all");
 
 	const filteredEvents = auditEvents.filter(event => {
 		if (search && !event.description.toLowerCase().includes(search.toLowerCase()) &&
@@ -197,7 +207,7 @@ export default function LogsAudit() {
 						return (
 							<div key={event.id} className="p-5 hover:bg-slate-50 transition-colors">
 								<div className="flex items-start gap-4">
-									<div className={`p-2.5 rounded-lg ${eventColors[event.type]}`}>
+									<div className={`p-2.5 rounded-lg ${eventColors[event.type] || "bg-slate-100 text-slate-700"}`}>
 										<Icon className="w-4 h-4" />
 									</div>
 
@@ -234,7 +244,7 @@ export default function LogsAudit() {
 										)}
 									</div>
 
-									<Badge className={eventColors[event.type]}>
+									<Badge className={eventColors[event.type] || "bg-slate-100 text-slate-700"}>
 										{event.type.replace(/_/g, ' ')}
 									</Badge>
 								</div>

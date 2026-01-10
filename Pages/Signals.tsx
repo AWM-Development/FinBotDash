@@ -26,7 +26,25 @@ import {
 import { Info, CheckCircle, XCircle, Star, TrendingUp, TrendingDown } from "lucide-react";
 import StatusBadge from "@/components/shared/StatusBadge";
 
-const signalsData = [
+interface SignalData {
+	ticker: string;
+	name: string;
+	assetClass: "equity" | "bonds" | "real_assets" | "cash";
+	momentum: number;
+	trend: "above" | "below";
+	eligible: boolean;
+	rank: number;
+	selected: boolean;
+}
+
+interface SignalHistoryItem {
+	month: string;
+	selections: string[];
+	regime: string;
+	change: string | null;
+}
+
+const signalsData: SignalData[] = [
 	{ ticker: "SPY", name: "S&P 500", assetClass: "equity", momentum: 8.5, trend: "above", eligible: true, rank: 2, selected: true },
 	{ ticker: "QQQ", name: "Nasdaq 100", assetClass: "equity", momentum: 9.2, trend: "above", eligible: true, rank: 1, selected: true },
 	{ ticker: "IWM", name: "Russell 2000", assetClass: "equity", momentum: 4.1, trend: "below", eligible: false, rank: 6, selected: false },
@@ -37,7 +55,7 @@ const signalsData = [
 	{ ticker: "SHY", name: "Short-Term Treasury", assetClass: "cash", momentum: 1.5, trend: "above", eligible: true, rank: 8, selected: false },
 ];
 
-const signalHistory = [
+const signalHistory: SignalHistoryItem[] = [
 	{ month: "Jan 2026", selections: ["QQQ", "SPY", "VNQ"], regime: "Risk-On", change: "IWM → QQQ" },
 	{ month: "Dec 2025", selections: ["SPY", "IWM", "VNQ"], regime: "Choppy", change: null },
 	{ month: "Nov 2025", selections: ["SPY", "IWM", "VNQ"], regime: "Choppy", change: "EFA → IWM" },
@@ -45,8 +63,8 @@ const signalHistory = [
 ];
 
 export default function Signals() {
-	const [filter, setFilter] = useState("all");
-	const [assetClassFilter, setAssetClassFilter] = useState("all");
+	const [filter, setFilter] = useState<string>("all");
+	const [assetClassFilter, setAssetClassFilter] = useState<string>("all");
 
 	const filteredSignals = signalsData.filter(signal => {
 		if (filter === "eligible" && !signal.eligible) return false;

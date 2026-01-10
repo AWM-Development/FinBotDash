@@ -11,24 +11,40 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
-import { TrendingUp, TrendingDown, DollarSign, AlertCircle } from "lucide-react";
+import { TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import MetricCard from "@/components/shared/MetricCard";
 
-const holdings = [
+interface Holding {
+	ticker: string;
+	name: string;
+	shares: number;
+	value: number;
+	costBasis: number;
+	assetClass: "equity" | "bonds" | "real_assets" | "cash";
+}
+
+interface PieDataPoint {
+	name: string;
+	value: string;
+	rawValue: number;
+	color: string;
+}
+
+const holdings: Holding[] = [
 	{ ticker: "QQQ", name: "Nasdaq 100", shares: 85, value: 43520, costBasis: 38200, assetClass: "equity" },
 	{ ticker: "SPY", name: "S&P 500", shares: 92, value: 44160, costBasis: 41000, assetClass: "equity" },
 	{ ticker: "VNQ", name: "Real Estate", shares: 420, value: 31080, costBasis: 32500, assetClass: "real_assets" },
 	{ ticker: "SHY", name: "Short-Term Treasury", shares: 78, value: 6510, costBasis: 6400, assetClass: "cash" },
 ];
 
-const assetClassColors = {
+const assetClassColors: Record<string, string> = {
 	equity: "#4f46e5",
 	bonds: "#06b6d4",
 	real_assets: "#f59e0b",
 	cash: "#94a3b8"
 };
 
-const assetClassLabels = {
+const assetClassLabels: Record<string, string> = {
 	equity: "Equities",
 	bonds: "Bonds",
 	real_assets: "Real Assets",
@@ -36,7 +52,7 @@ const assetClassLabels = {
 };
 
 export default function Portfolio() {
-	const [view, setView] = useState("ticker");
+	const [view, setView] = useState<"ticker" | "class">("ticker");
 
 	const totalValue = holdings.reduce((sum, h) => sum + h.value, 0);
 	const totalCostBasis = holdings.reduce((sum, h) => sum + h.costBasis, 0);
@@ -46,18 +62,18 @@ export default function Portfolio() {
 	const allocationByClass = holdings.reduce((acc, h) => {
 		acc[h.assetClass] = (acc[h.assetClass] || 0) + h.value;
 		return acc;
-	}, {});
+	}, {} as Record<string, number>);
 
-	const pieData = Object.entries(allocationByClass).map(([key, value]) => ({
-		name: assetClassLabels[key],
-		value: (value / totalValue * 100).toFixed(1),
+	const pieData: PieDataPoint[] = Object.entries(allocationByClass).map(([key, value]) => ({
+		name: assetClassLabels[key] || key,
+		value: ((value / totalValue) * 100).toFixed(1),
 		rawValue: value,
-		color: assetClassColors[key]
+		color: assetClassColors[key] || "#94a3b8"
 	}));
 
-	const tickerPieData = holdings.map(h => ({
+	const tickerPieData: PieDataPoint[] = holdings.map(h => ({
 		name: h.ticker,
-		value: (h.value / totalValue * 100).toFixed(1),
+		value: ((h.value / totalValue) * 100).toFixed(1),
 		rawValue: h.value,
 		color: assetClassColors[h.assetClass]
 	}));
@@ -218,7 +234,7 @@ export default function Portfolio() {
 										))}
 									</Pie>
 									<Tooltip
-										formatter={(value, name) => [`$${value.toLocaleString()}`, name]}
+										formatter={(value: number) => [`$${value.toLocaleString()}`, ""]}
 									/>
 								</PieChart>
 							</ResponsiveContainer>

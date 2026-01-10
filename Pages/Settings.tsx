@@ -31,7 +31,13 @@ import {
 	CheckCircle
 } from "lucide-react";
 
-const universeETFs = [
+interface UniverseETF {
+	ticker: string;
+	name: string;
+	assetClass: string;
+}
+
+const universeETFs: UniverseETF[] = [
 	{ ticker: "SPY", name: "S&P 500", assetClass: "Equity" },
 	{ ticker: "QQQ", name: "Nasdaq 100", assetClass: "Equity" },
 	{ ticker: "IWM", name: "Russell 2000", assetClass: "Equity" },
@@ -43,11 +49,11 @@ const universeETFs = [
 ];
 
 export default function Settings() {
-	const [isBaseline, setIsBaseline] = useState(true);
-	const [riskFreeRate, setRiskFreeRate] = useState("4.5");
-	const [volatilityTarget, setVolatilityTarget] = useState(true);
-	const [targetVol, setTargetVol] = useState("15");
-	const [rebalanceDay, setRebalanceDay] = useState("1");
+	const [isBaseline, setIsBaseline] = useState<boolean>(true);
+	const [riskFreeRate, setRiskFreeRate] = useState<string>("4.5");
+	const [volatilityTarget, setVolatilityTarget] = useState<boolean>(true);
+	const [targetVol, setTargetVol] = useState<string>("15");
+	const [rebalanceDay, setRebalanceDay] = useState<string>("1");
 
 	return (
 		<div className="p-6 lg:p-8 max-w-5xl mx-auto">

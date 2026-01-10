@@ -14,9 +14,16 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import { HelpCircle, TrendingUp, Filter, Award, Shield, DollarSign } from "lucide-react";
+import { HelpCircle, TrendingUp, Filter, Award, Shield, DollarSign, type LucideIcon } from "lucide-react";
 
-const helpTopics = [
+interface HelpTopic {
+	id: string;
+	icon: LucideIcon;
+	title: string;
+	content: string;
+}
+
+const helpTopics: HelpTopic[] = [
 	{
 		id: "momentum",
 		icon: TrendingUp,
@@ -107,25 +114,28 @@ export default function HelpDrawer() {
 
 				<div className="mt-6">
 					<Accordion type="single" collapsible className="w-full">
-						{helpTopics.map((topic) => (
-							<AccordionItem key={topic.id} value={topic.id}>
-								<AccordionTrigger className="text-left">
-									<div className="flex items-center gap-3">
-										<div className="p-2 rounded-lg bg-indigo-100">
-											<topic.icon className="w-4 h-4 text-indigo-600" />
+						{helpTopics.map((topic) => {
+							const IconComponent = topic.icon;
+							return (
+								<AccordionItem key={topic.id} value={topic.id}>
+									<AccordionTrigger className="text-left">
+										<div className="flex items-center gap-3">
+											<div className="p-2 rounded-lg bg-indigo-100">
+												<IconComponent className="w-4 h-4 text-indigo-600" />
+											</div>
+											<span className="text-sm font-medium">{topic.title}</span>
 										</div>
-										<span className="text-sm font-medium">{topic.title}</span>
-									</div>
-								</AccordionTrigger>
-								<AccordionContent>
-									<div className="pl-12 pr-4 pb-2">
-										<p className="text-sm text-slate-600 whitespace-pre-line leading-relaxed">
-											{topic.content}
-										</p>
-									</div>
-								</AccordionContent>
-							</AccordionItem>
-						))}
+									</AccordionTrigger>
+									<AccordionContent>
+										<div className="pl-12 pr-4 pb-2">
+											<p className="text-sm text-slate-600 whitespace-pre-line leading-relaxed">
+												{topic.content}
+											</p>
+										</div>
+									</AccordionContent>
+								</AccordionItem>
+							);
+						})}
 					</Accordion>
 				</div>
 

@@ -1,28 +1,57 @@
 import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
-const COLORS = {
+interface AllocationData {
+	equity?: number;
+	bonds?: number;
+	real_assets?: number;
+	cash?: number;
+	[key: string]: number | undefined;
+}
+
+interface AllocationDonutProps {
+	data: AllocationData;
+	size?: number;
+}
+
+interface ChartDataPoint {
+	name: string;
+	value: number;
+	color: string;
+}
+
+interface TooltipProps {
+	active?: boolean;
+	payload?: Array<{
+		name: string;
+		value: number;
+	}>;
+}
+
+const COLORS: Record<string, string> = {
 	equity: "#4f46e5",
 	bonds: "#06b6d4",
 	real_assets: "#f59e0b",
 	cash: "#94a3b8"
 };
 
-const LABELS = {
+const LABELS: Record<string, string> = {
 	equity: "Equities",
 	bonds: "Bonds",
 	real_assets: "Real Assets",
 	cash: "Cash"
 };
 
-export default function AllocationDonut({ data, size = 200 }) {
-	const chartData = Object.entries(data).map(([key, value]) => ({
-		name: LABELS[key] || key,
-		value: value,
-		color: COLORS[key] || "#94a3b8"
-	})).filter(d => d.value > 0);
+export default function AllocationDonut({ data, size = 200 }: AllocationDonutProps) {
+	const chartData: ChartDataPoint[] = Object.entries(data)
+		.map(([key, value]) => ({
+			name: LABELS[key] || key,
+			value: value || 0,
+			color: COLORS[key] || "#94a3b8"
+		}))
+		.filter(d => d.value > 0);
 
-	const CustomTooltip = ({ active, payload }) => {
+	const CustomTooltip = ({ active, payload }: TooltipProps) => {
 		if (active && payload && payload.length) {
 			return (
 				<div className="bg-white px-3 py-2 rounded-lg shadow-lg border border-slate-200">
