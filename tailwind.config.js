@@ -3,7 +3,11 @@ export default {
   darkMode: ["class"],
   content: [
     "./index.html",
-    "./**/*.{js,jsx}",
+    "./src/**/*.{ts,tsx}",
+    "./Components/**/*.{ts,tsx}",
+    "./Pages/**/*.{ts,tsx}",
+    "./Layout.tsx",
+    "./Entities/**/*.{ts,tsx}",
   ],
   theme: {
     extend: {
