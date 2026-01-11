@@ -13,9 +13,9 @@ describe('ProposedTrades', () => {
 	it('should render all trades', () => {
 		render(<ProposedTrades />);
 
-		const buyElements = screen.getAllByText('Buy');
-		const sellElements = screen.getAllByText('Sell');
-		
+		const buyElements = screen.getAllByText('BUY');
+		const sellElements = screen.getAllByText('SELL');
+
 		expect(buyElements.length).toBeGreaterThan(0);
 		expect(sellElements.length).toBeGreaterThan(0);
 	});

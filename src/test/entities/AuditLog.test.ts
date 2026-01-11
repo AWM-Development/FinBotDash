@@ -75,8 +75,8 @@ describe('AuditLog', () => {
 			const log: AuditLog = {
 				event_type: 'packet_generated',
 				description: 'Test description',
-				ticker: 'SPY',
-				packet_month: 'January 2026',
+				symbol: 'SPY',
+				packet_date: 'January 2026',
 				metadata: { key: 'value' },
 				notes: 'Some notes',
 			};
@@ -84,11 +84,11 @@ describe('AuditLog', () => {
 			expect(validateAuditLog(log)).toBe(true);
 		});
 
-		it('should reject invalid ticker type', () => {
+		it('should reject invalid symbol type', () => {
 			const log = {
 				event_type: 'packet_generated',
 				description: 'Test description',
-				ticker: 123,
+				symbol: 123,
 			};
 
 			expect(validateAuditLog(log)).toBe(false);
@@ -118,15 +118,15 @@ describe('AuditLog', () => {
 
 		it('should create audit log with optional fields', () => {
 			const log = createAuditLog('packet_approved', 'Packet approved', {
-				ticker: 'SPY',
-				packet_month: 'January 2026',
+				symbol: 'SPY',
+				packet_date: 'January 2026',
 				notes: 'Approved with changes',
 				user: 'Alex',
 				timestamp: '2026-01-28T10:00:00Z',
 			});
 
-			expect(log.ticker).toBe('SPY');
-			expect(log.packet_month).toBe('January 2026');
+			expect(log.symbol).toBe('SPY');
+			expect(log.packet_date).toBe('January 2026');
 			expect(log.notes).toBe('Approved with changes');
 			expect(log.user).toBe('Alex');
 			expect(log.timestamp).toBe('2026-01-28T10:00:00Z');
@@ -150,11 +150,11 @@ describe('AuditLog', () => {
 			expect(formatAuditLog(log)).toBe('Test packet generated');
 		});
 
-		it('should format audit log with ticker', () => {
+		it('should format audit log with symbol', () => {
 			const log: AuditLog = {
 				event_type: 'signals_changed',
 				description: 'Signal rotation',
-				ticker: 'QQQ',
+				symbol: 'QQQ',
 			};
 
 			expect(formatAuditLog(log)).toBe('Signal rotation (QQQ)');
@@ -164,7 +164,7 @@ describe('AuditLog', () => {
 			const log: AuditLog = {
 				event_type: 'packet_generated',
 				description: 'Test packet',
-				packet_month: 'January 2026',
+				packet_date: 'January 2026',
 			};
 
 			expect(formatAuditLog(log)).toBe('Test packet [January 2026]');
@@ -174,8 +174,8 @@ describe('AuditLog', () => {
 			const log: AuditLog = {
 				event_type: 'packet_approved',
 				description: 'Packet approved',
-				ticker: 'SPY',
-				packet_month: 'January 2026',
+				symbol: 'SPY',
+				packet_date: 'January 2026',
 			};
 
 			expect(formatAuditLog(log)).toBe('Packet approved (SPY) [January 2026]');

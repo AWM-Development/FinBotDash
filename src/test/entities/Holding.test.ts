@@ -14,7 +14,7 @@ describe('Holding', () => {
 	describe('validateHolding', () => {
 		it('should validate a valid holding', () => {
 			const holding: Holding = {
-				ticker: 'SPY',
+				symbol: 'SPY',
 				shares: 100,
 			};
 
@@ -28,7 +28,7 @@ describe('Holding', () => {
 			expect(validateHolding(123)).toBe(false);
 		});
 
-		it('should reject missing ticker', () => {
+		it('should reject missing symbol', () => {
 			const holding = {
 				shares: 100,
 			};
@@ -38,7 +38,7 @@ describe('Holding', () => {
 
 		it('should reject missing shares', () => {
 			const holding = {
-				ticker: 'SPY',
+				symbol: 'SPY',
 			};
 
 			expect(validateHolding(holding)).toBe(false);
@@ -46,7 +46,7 @@ describe('Holding', () => {
 
 		it('should reject negative shares', () => {
 			const holding = {
-				ticker: 'SPY',
+				symbol: 'SPY',
 				shares: -10,
 			};
 
@@ -55,7 +55,7 @@ describe('Holding', () => {
 
 		it('should reject invalid asset class', () => {
 			const holding = {
-				ticker: 'SPY',
+				symbol: 'SPY',
 				shares: 100,
 				asset_class: 'invalid' as AssetClass,
 			};
@@ -68,7 +68,7 @@ describe('Holding', () => {
 
 			validAssetClasses.forEach((assetClass) => {
 				const holding: Holding = {
-					ticker: 'SPY',
+					symbol: 'SPY',
 					shares: 100,
 					asset_class: assetClass,
 				};
@@ -79,7 +79,7 @@ describe('Holding', () => {
 
 		it('should reject negative current_value', () => {
 			const holding = {
-				ticker: 'SPY',
+				symbol: 'SPY',
 				shares: 100,
 				current_value: -10,
 			};
@@ -89,7 +89,7 @@ describe('Holding', () => {
 
 		it('should reject negative cost_basis', () => {
 			const holding = {
-				ticker: 'SPY',
+				symbol: 'SPY',
 				shares: 100,
 				cost_basis: -10,
 			};
@@ -99,7 +99,7 @@ describe('Holding', () => {
 
 		it('should validate optional fields', () => {
 			const holding: Holding = {
-				ticker: 'SPY',
+				symbol: 'SPY',
 				shares: 100,
 				current_value: 50000,
 				cost_basis: 45000,
@@ -117,7 +117,7 @@ describe('Holding', () => {
 			const holding = createHolding('SPY', 100);
 
 			expect(validateHolding(holding)).toBe(true);
-			expect(holding.ticker).toBe('SPY');
+			expect(holding.symbol).toBe('SPY');
 			expect(holding.shares).toBe(100);
 		});
 
@@ -147,7 +147,7 @@ describe('Holding', () => {
 				purchase_date: '2025-01-01',
 			});
 
-			expect(holding.ticker).toBe('QQQ');
+			expect(holding.symbol).toBe('QQQ');
 			expect(holding.shares).toBe(50);
 			expect(holding.current_value).toBe(25000);
 			expect(holding.cost_basis).toBe(22000);
@@ -164,9 +164,9 @@ describe('Holding', () => {
 
 		it('should calculate total value of holdings', () => {
 			const holdings: Holding[] = [
-				{ ticker: 'SPY', shares: 100, current_value: 50000 },
-				{ ticker: 'QQQ', shares: 50, current_value: 25000 },
-				{ ticker: 'VNQ', shares: 200, current_value: 15000 },
+				{ symbol: 'SPY', shares: 100, current_value: 50000 },
+				{ symbol: 'QQQ', shares: 50, current_value: 25000 },
+				{ symbol: 'VNQ', shares: 200, current_value: 15000 },
 			];
 
 			expect(calculateTotalValue(holdings)).toBe(90000);
@@ -174,8 +174,8 @@ describe('Holding', () => {
 
 		it('should handle holdings without current_value', () => {
 			const holdings: Holding[] = [
-				{ ticker: 'SPY', shares: 100, current_value: 50000 },
-				{ ticker: 'QQQ', shares: 50 }, // no current_value
+				{ symbol: 'SPY', shares: 100, current_value: 50000 },
+				{ symbol: 'QQQ', shares: 50 }, // no current_value
 			];
 
 			expect(calculateTotalValue(holdings)).toBe(50000);
@@ -189,9 +189,9 @@ describe('Holding', () => {
 
 		it('should calculate total cost basis', () => {
 			const holdings: Holding[] = [
-				{ ticker: 'SPY', shares: 100, cost_basis: 45000 },
-				{ ticker: 'QQQ', shares: 50, cost_basis: 22000 },
-				{ ticker: 'VNQ', shares: 200, cost_basis: 14000 },
+				{ symbol: 'SPY', shares: 100, cost_basis: 45000 },
+				{ symbol: 'QQQ', shares: 50, cost_basis: 22000 },
+				{ symbol: 'VNQ', shares: 200, cost_basis: 14000 },
 			];
 
 			expect(calculateTotalCostBasis(holdings)).toBe(81000);
@@ -199,8 +199,8 @@ describe('Holding', () => {
 
 		it('should handle holdings without cost_basis', () => {
 			const holdings: Holding[] = [
-				{ ticker: 'SPY', shares: 100, cost_basis: 45000 },
-				{ ticker: 'QQQ', shares: 50 }, // no cost_basis
+				{ symbol: 'SPY', shares: 100, cost_basis: 45000 },
+				{ symbol: 'QQQ', shares: 50 }, // no cost_basis
 			];
 
 			expect(calculateTotalCostBasis(holdings)).toBe(45000);
@@ -214,9 +214,9 @@ describe('Holding', () => {
 
 		it('should calculate total unrealized gain/loss', () => {
 			const holdings: Holding[] = [
-				{ ticker: 'SPY', shares: 100, unrealized_gain_loss: 5000 },
-				{ ticker: 'QQQ', shares: 50, unrealized_gain_loss: 3000 },
-				{ ticker: 'VNQ', shares: 200, unrealized_gain_loss: -2000 },
+				{ symbol: 'SPY', shares: 100, unrealized_gain_loss: 5000 },
+				{ symbol: 'QQQ', shares: 50, unrealized_gain_loss: 3000 },
+				{ symbol: 'VNQ', shares: 200, unrealized_gain_loss: -2000 },
 			];
 
 			expect(calculateTotalUnrealizedGainLoss(holdings)).toBe(6000);
@@ -224,8 +224,8 @@ describe('Holding', () => {
 
 		it('should handle holdings without unrealized_gain_loss', () => {
 			const holdings: Holding[] = [
-				{ ticker: 'SPY', shares: 100, unrealized_gain_loss: 5000 },
-				{ ticker: 'QQQ', shares: 50 }, // no unrealized_gain_loss
+				{ symbol: 'SPY', shares: 100, unrealized_gain_loss: 5000 },
+				{ symbol: 'QQQ', shares: 50 }, // no unrealized_gain_loss
 			];
 
 			expect(calculateTotalUnrealizedGainLoss(holdings)).toBe(5000);
@@ -244,30 +244,30 @@ describe('Holding', () => {
 
 		it('should group holdings by asset class', () => {
 			const holdings: Holding[] = [
-				{ ticker: 'SPY', shares: 100, asset_class: 'equity' },
-				{ ticker: 'QQQ', shares: 50, asset_class: 'equity' },
-				{ ticker: 'TLT', shares: 200, asset_class: 'bonds' },
-				{ ticker: 'VNQ', shares: 150, asset_class: 'real_assets' },
-				{ ticker: 'SHY', shares: 100, asset_class: 'cash' },
+				{ symbol: 'SPY', shares: 100, asset_class: 'equity' },
+				{ symbol: 'QQQ', shares: 50, asset_class: 'equity' },
+				{ symbol: 'TLT', shares: 200, asset_class: 'bonds' },
+				{ symbol: 'VNQ', shares: 150, asset_class: 'real_assets' },
+				{ symbol: 'SHY', shares: 100, asset_class: 'cash' },
 			];
 
 			const grouped = groupByAssetClass(holdings);
 
 			expect(grouped.equity).toHaveLength(2);
-			expect(grouped.equity[0].ticker).toBe('SPY');
-			expect(grouped.equity[1].ticker).toBe('QQQ');
+			expect(grouped.equity[0].symbol).toBe('SPY');
+			expect(grouped.equity[1].symbol).toBe('QQQ');
 			expect(grouped.bonds).toHaveLength(1);
-			expect(grouped.bonds[0].ticker).toBe('TLT');
+			expect(grouped.bonds[0].symbol).toBe('TLT');
 			expect(grouped.real_assets).toHaveLength(1);
-			expect(grouped.real_assets[0].ticker).toBe('VNQ');
+			expect(grouped.real_assets[0].symbol).toBe('VNQ');
 			expect(grouped.cash).toHaveLength(1);
-			expect(grouped.cash[0].ticker).toBe('SHY');
+			expect(grouped.cash[0].symbol).toBe('SHY');
 		});
 
 		it('should default to equity for holdings without asset_class', () => {
 			const holdings: Holding[] = [
-				{ ticker: 'SPY', shares: 100 }, // no asset_class
-				{ ticker: 'QQQ', shares: 50, asset_class: 'equity' },
+				{ symbol: 'SPY', shares: 100 }, // no asset_class
+				{ symbol: 'QQQ', shares: 50, asset_class: 'equity' },
 			];
 
 			const grouped = groupByAssetClass(holdings);

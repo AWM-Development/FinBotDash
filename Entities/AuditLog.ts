@@ -15,8 +15,8 @@ export interface AuditLog {
 	id?: number;
 	event_type: AuditLogEventType;
 	description: string;
-	ticker?: string | null;
-	packet_month?: string | null;
+	symbol?: string | null;
+	packet_date?: string | null;
 	metadata?: AuditLogMetadata;
 	notes?: string | null;
 	timestamp?: string;
@@ -55,11 +55,11 @@ export function validateAuditLog(log: unknown): log is AuditLog {
 		return false;
 	}
 
-	if (auditLog.ticker !== undefined && auditLog.ticker !== null && typeof auditLog.ticker !== "string") {
+	if (auditLog.symbol !== undefined && auditLog.symbol !== null && typeof auditLog.symbol !== "string") {
 		return false;
 	}
 
-	if (auditLog.packet_month !== undefined && auditLog.packet_month !== null && typeof auditLog.packet_month !== "string") {
+	if (auditLog.packet_date !== undefined && auditLog.packet_date !== null && typeof auditLog.packet_date !== "string") {
 		return false;
 	}
 
@@ -102,11 +102,11 @@ export function createAuditLog(
  */
 export function formatAuditLog(log: AuditLog): string {
 	const parts = [log.description];
-	if (log.ticker) {
-		parts.push(`(${log.ticker})`);
+	if (log.symbol) {
+		parts.push(`(${log.symbol})`);
 	}
-	if (log.packet_month) {
-		parts.push(`[${log.packet_month}]`);
+	if (log.packet_date) {
+		parts.push(`[${log.packet_date}]`);
 	}
 	return parts.join(" ");
 }

@@ -32,7 +32,7 @@ import EmptyState from "@/components/shared/EmptyState";
 
 interface TLHOpportunity {
 	id: number;
-	ticker: string;
+	symbol: string;
 	unrealizedLoss: number;
 	replacement: string;
 	estimatedSavings: number;
@@ -40,7 +40,7 @@ interface TLHOpportunity {
 }
 
 interface WashSaleRestriction {
-	ticker: string;
+	symbol: string;
 	soldDate: string;
 	endDate: string;
 	daysRemaining: number;
@@ -53,7 +53,7 @@ interface RealizedGainsLosses {
 }
 
 interface HoldingsBreakdown {
-	ticker: string;
+	symbol: string;
 	value: number;
 	shortTerm: number;
 	longTerm: number;
@@ -62,7 +62,7 @@ interface HoldingsBreakdown {
 const tlhOpportunities: TLHOpportunity[] = [
 	{
 		id: 1,
-		ticker: "VTI",
+		symbol: "VTI",
 		unrealizedLoss: -1240,
 		replacement: "ITOT",
 		estimatedSavings: 340,
@@ -71,7 +71,7 @@ const tlhOpportunities: TLHOpportunity[] = [
 ];
 
 const washSaleRestrictions: WashSaleRestriction[] = [
-	{ ticker: "SPY", soldDate: "Jan 15, 2026", endDate: "Feb 14, 2026", daysRemaining: 17 },
+	{ symbol: "SPY", soldDate: "Jan 15, 2026", endDate: "Feb 14, 2026", daysRemaining: 17 },
 ];
 
 const realizedGainsLosses: Record<string, RealizedGainsLosses> = {
@@ -80,9 +80,9 @@ const realizedGainsLosses: Record<string, RealizedGainsLosses> = {
 };
 
 const holdingsBreakdown: HoldingsBreakdown[] = [
-	{ ticker: "QQQ", value: 43520, shortTerm: 15200, longTerm: 28320 },
-	{ ticker: "SPY", value: 44160, shortTerm: 8500, longTerm: 35660 },
-	{ ticker: "VNQ", value: 31080, shortTerm: 31080, longTerm: 0 },
+	{ symbol: "QQQ", value: 43520, shortTerm: 15200, longTerm: 28320 },
+	{ symbol: "SPY", value: 44160, shortTerm: 8500, longTerm: 35660 },
+	{ symbol: "VNQ", value: 31080, shortTerm: 31080, longTerm: 0 },
 ];
 
 export default function TaxTLH() {
@@ -163,7 +163,7 @@ export default function TaxTLH() {
 						<TableBody>
 							{opportunities.map((op) => (
 								<TableRow key={op.id}>
-									<TableCell className="font-semibold text-slate-900">{op.ticker}</TableCell>
+									<TableCell className="font-semibold text-slate-900">{op.symbol}</TableCell>
 									<TableCell className="text-rose-600 font-medium">
 										${Math.abs(op.unrealizedLoss).toLocaleString()}
 									</TableCell>
@@ -226,7 +226,7 @@ export default function TaxTLH() {
 							{washSaleRestrictions.map((restriction, index) => (
 								<div key={index} className="p-4 bg-amber-50 rounded-lg border border-amber-100">
 									<div className="flex items-center justify-between mb-2">
-										<span className="text-sm font-semibold text-slate-900">{restriction.ticker}</span>
+										<span className="text-sm font-semibold text-slate-900">{restriction.symbol}</span>
 										<Badge className="bg-amber-100 text-amber-700">
 											{restriction.daysRemaining} days left
 										</Badge>
@@ -339,8 +339,8 @@ export default function TaxTLH() {
 					</TableHeader>
 					<TableBody>
 						{holdingsBreakdown.map((holding) => (
-							<TableRow key={holding.ticker}>
-								<TableCell className="font-semibold text-slate-900">{holding.ticker}</TableCell>
+							<TableRow key={holding.symbol}>
+								<TableCell className="font-semibold text-slate-900">{holding.symbol}</TableCell>
 								<TableCell>${holding.value.toLocaleString()}</TableCell>
 								<TableCell>
 									<div className="flex items-center gap-2">

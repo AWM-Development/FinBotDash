@@ -1,7 +1,7 @@
 export type AssetClass = "equity" | "bonds" | "real_assets" | "cash";
 
 export interface Holding {
-	ticker: string;
+	symbol: string;
 	shares: number;
 	current_value?: number;
 	cost_basis?: number;
@@ -20,7 +20,7 @@ export function validateHolding(holding: unknown): holding is Holding {
 
 	const h = holding as Partial<Holding>;
 
-	if (!h.ticker || typeof h.ticker !== "string") {
+	if (!h.symbol || typeof h.symbol !== "string") {
 		return false;
 	}
 
@@ -58,12 +58,12 @@ export function validateHolding(holding: unknown): holding is Holding {
  * Creates a new Holding
  */
 export function createHolding(
-	ticker: string,
+	symbol: string,
 	shares: number,
-	options?: Partial<Omit<Holding, "ticker" | "shares">>
+	options?: Partial<Omit<Holding, "symbol" | "shares">>
 ): Holding {
 	const holding: Holding = {
-		ticker,
+		symbol,
 		shares,
 		...options,
 	};

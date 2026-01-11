@@ -27,7 +27,7 @@ import { Info, CheckCircle, XCircle, Star, TrendingUp, TrendingDown } from "luci
 import StatusBadge from "@/components/shared/StatusBadge";
 
 interface SignalData {
-	ticker: string;
+	symbol: string;
 	name: string;
 	assetClass: "equity" | "bonds" | "real_assets" | "cash";
 	momentum: number;
@@ -38,28 +38,28 @@ interface SignalData {
 }
 
 interface SignalHistoryItem {
-	month: string;
+	date: string;
 	selections: string[];
 	regime: string;
 	change: string | null;
 }
 
 const signalsData: SignalData[] = [
-	{ ticker: "SPY", name: "S&P 500", assetClass: "equity", momentum: 8.5, trend: "above", eligible: true, rank: 2, selected: true },
-	{ ticker: "QQQ", name: "Nasdaq 100", assetClass: "equity", momentum: 9.2, trend: "above", eligible: true, rank: 1, selected: true },
-	{ ticker: "IWM", name: "Russell 2000", assetClass: "equity", momentum: 4.1, trend: "below", eligible: false, rank: 6, selected: false },
-	{ ticker: "EFA", name: "Intl Developed", assetClass: "equity", momentum: 5.8, trend: "above", eligible: true, rank: 4, selected: false },
-	{ ticker: "VNQ", name: "Real Estate", assetClass: "real_assets", momentum: 6.2, trend: "above", eligible: true, rank: 3, selected: true },
-	{ ticker: "TLT", name: "Long-Term Treasury", assetClass: "bonds", momentum: 3.2, trend: "below", eligible: false, rank: 7, selected: false },
-	{ ticker: "IEF", name: "Intermediate Treasury", assetClass: "bonds", momentum: 4.8, trend: "above", eligible: true, rank: 5, selected: false },
-	{ ticker: "SHY", name: "Short-Term Treasury", assetClass: "cash", momentum: 1.5, trend: "above", eligible: true, rank: 8, selected: false },
+	{ symbol: "SPY", name: "S&P 500", assetClass: "equity", momentum: 8.5, trend: "above", eligible: true, rank: 2, selected: true },
+	{ symbol: "QQQ", name: "Nasdaq 100", assetClass: "equity", momentum: 9.2, trend: "above", eligible: true, rank: 1, selected: true },
+	{ symbol: "IWM", name: "Russell 2000", assetClass: "equity", momentum: 4.1, trend: "below", eligible: false, rank: 6, selected: false },
+	{ symbol: "EFA", name: "Intl Developed", assetClass: "equity", momentum: 5.8, trend: "above", eligible: true, rank: 4, selected: false },
+	{ symbol: "VNQ", name: "Real Estate", assetClass: "real_assets", momentum: 6.2, trend: "above", eligible: true, rank: 3, selected: true },
+	{ symbol: "TLT", name: "Long-Term Treasury", assetClass: "bonds", momentum: 3.2, trend: "below", eligible: false, rank: 7, selected: false },
+	{ symbol: "IEF", name: "Intermediate Treasury", assetClass: "bonds", momentum: 4.8, trend: "above", eligible: true, rank: 5, selected: false },
+	{ symbol: "SHY", name: "Short-Term Treasury", assetClass: "cash", momentum: 1.5, trend: "above", eligible: true, rank: 8, selected: false },
 ];
 
 const signalHistory: SignalHistoryItem[] = [
-	{ month: "Jan 2026", selections: ["QQQ", "SPY", "VNQ"], regime: "Risk-On", change: "IWM → QQQ" },
-	{ month: "Dec 2025", selections: ["SPY", "IWM", "VNQ"], regime: "Choppy", change: null },
-	{ month: "Nov 2025", selections: ["SPY", "IWM", "VNQ"], regime: "Choppy", change: "EFA → IWM" },
-	{ month: "Oct 2025", selections: ["SPY", "EFA", "VNQ"], regime: "Risk-On", change: null },
+	{ date: "2026-01-11", selections: ["QQQ", "SPY", "VNQ"], regime: "Risk-On", change: "IWM → QQQ" },
+	{ date: "2025-12-01", selections: ["SPY", "IWM", "VNQ"], regime: "Choppy", change: null },
+	{ date: "2025-11-01", selections: ["SPY", "IWM", "VNQ"], regime: "Choppy", change: "EFA → IWM" },
+	{ date: "2025-10-01", selections: ["SPY", "EFA", "VNQ"], regime: "Risk-On", change: null },
 ];
 
 export default function Signals() {
@@ -162,9 +162,9 @@ export default function Signals() {
 					</TableHeader>
 					<TableBody>
 						{filteredSignals.map((signal) => (
-							<TableRow key={signal.ticker} className={signal.selected ? "bg-indigo-50/50" : ""}>
+							<TableRow key={signal.symbol} className={signal.selected ? "bg-indigo-50/50" : ""}>
 								<TableCell className="font-semibold text-slate-900">
-									{signal.ticker}
+									{signal.symbol}
 								</TableCell>
 								<TableCell className="text-slate-600">{signal.name}</TableCell>
 								<TableCell>
@@ -225,16 +225,16 @@ export default function Signals() {
 				<div className="space-y-4">
 					{signalHistory.map((item, index) => (
 						<div
-							key={item.month}
+							key={item.date}
 							className={`flex items-center gap-4 ${index !== signalHistory.length - 1 ? "pb-4 border-b border-slate-100" : ""}`}
 						>
 							<div className="w-24 shrink-0">
-								<p className="text-sm font-medium text-slate-900">{item.month}</p>
+								<p className="text-sm font-medium text-slate-900">{item.date}</p>
 							</div>
 							<div className="flex gap-2">
-								{item.selections.map((ticker) => (
-									<Badge key={ticker} variant="outline" className="bg-slate-50">
-										{ticker}
+								{item.selections.map((symbol) => (
+									<Badge key={symbol} variant="outline" className="bg-slate-50">
+										{symbol}
 									</Badge>
 								))}
 							</div>

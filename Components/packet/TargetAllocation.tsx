@@ -2,16 +2,16 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 
 interface Allocation {
-	ticker: string;
+	symbol: string;
 	name: string;
 	target: number;
 	current: number;
 }
 
 const allocations: Allocation[] = [
-	{ ticker: "QQQ", name: "Nasdaq 100", target: 33.33, current: 28.5 },
-	{ ticker: "SPY", name: "S&P 500", target: 33.33, current: 35.2 },
-	{ ticker: "VNQ", name: "Real Estate", target: 33.33, current: 31.1 },
+	{ symbol: "QQQ", name: "Nasdaq 100", target: 33.33, current: 28.5 },
+	{ symbol: "SPY", name: "S&P 500", target: 33.33, current: 35.2 },
+	{ symbol: "VNQ", name: "Real Estate", target: 33.33, current: 31.1 },
 ];
 
 export default function TargetAllocation() {
@@ -23,10 +23,10 @@ export default function TargetAllocation() {
 				{allocations.map((item) => {
 					const diff = item.target - item.current;
 					return (
-						<div key={item.ticker} className="space-y-2">
+						<div key={item.symbol} className="space-y-2">
 							<div className="flex items-center justify-between">
 								<div>
-									<span className="text-sm font-medium text-slate-900">{item.ticker}</span>
+									<span className="text-sm font-medium text-slate-900">{item.symbol}</span>
 									<span className="text-xs text-slate-500 ml-2">{item.name}</span>
 								</div>
 								<div className="text-right">

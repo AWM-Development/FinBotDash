@@ -26,8 +26,8 @@ interface AuditEvent {
 	id: number;
 	type: string;
 	description: string;
-	ticker: string | null;
-	month: string;
+	symbol: string | null;
+	date: string;
 	timestamp: string;
 	user: string;
 	notes: string | null;
@@ -38,8 +38,8 @@ const auditEvents: AuditEvent[] = [
 		id: 1,
 		type: "packet_approved",
 		description: "January 2026 packet approved",
-		ticker: null,
-		month: "January 2026",
+		symbol: null,
+		date: "2026-01-28",
 		timestamp: "Jan 28, 2026 10:45 AM",
 		user: "Alex",
 		notes: "All trades executed as recommended"
@@ -48,8 +48,8 @@ const auditEvents: AuditEvent[] = [
 		id: 2,
 		type: "packet_reviewed",
 		description: "January 2026 packet marked as reviewed",
-		ticker: null,
-		month: "January 2026",
+		symbol: null,
+		date: "2026-01-28",
 		timestamp: "Jan 28, 2026 10:30 AM",
 		user: "Alex",
 		notes: null
@@ -58,8 +58,8 @@ const auditEvents: AuditEvent[] = [
 		id: 3,
 		type: "packet_generated",
 		description: "January 2026 rebalance packet generated",
-		ticker: null,
-		month: "January 2026",
+		symbol: null,
+		date: "2026-01-28",
 		timestamp: "Jan 28, 2026 6:00 AM",
 		user: "System",
 		notes: null
@@ -68,8 +68,8 @@ const auditEvents: AuditEvent[] = [
 		id: 4,
 		type: "signals_changed",
 		description: "Signal rotation: IWM dropped, QQQ added",
-		ticker: "QQQ",
-		month: "January 2026",
+		symbol: "QQQ",
+		date: "2026-01-27",
 		timestamp: "Jan 27, 2026 4:00 PM",
 		user: "System",
 		notes: "IWM fell below 200-day SMA"
@@ -78,8 +78,8 @@ const auditEvents: AuditEvent[] = [
 		id: 5,
 		type: "data_update",
 		description: "Daily price data updated",
-		ticker: null,
-		month: "January 2026",
+		symbol: null,
+		date: "2026-01-27",
 		timestamp: "Jan 27, 2026 4:00 PM",
 		user: "System",
 		notes: null
@@ -88,8 +88,8 @@ const auditEvents: AuditEvent[] = [
 		id: 6,
 		type: "override_recorded",
 		description: "Manual override recorded for December rebalance",
-		ticker: "VNQ",
-		month: "December 2025",
+		symbol: "VNQ",
+		date: "2025-12-28",
 		timestamp: "Dec 28, 2025 11:15 AM",
 		user: "Alex",
 		notes: "Reduced VNQ allocation by 5% due to rate concerns"
@@ -98,8 +98,8 @@ const auditEvents: AuditEvent[] = [
 		id: 7,
 		type: "packet_approved",
 		description: "December 2025 packet approved",
-		ticker: null,
-		month: "December 2025",
+		symbol: null,
+		date: "2025-12-28",
 		timestamp: "Dec 28, 2025 10:00 AM",
 		user: "Alex",
 		notes: null
@@ -131,15 +131,15 @@ export default function LogsAudit() {
 
 	const filteredEvents = auditEvents.filter(event => {
 		if (search && !event.description.toLowerCase().includes(search.toLowerCase()) &&
-			!event.ticker?.toLowerCase().includes(search.toLowerCase())) {
+			!event.symbol?.toLowerCase().includes(search.toLowerCase())) {
 			return false;
 		}
 		if (typeFilter !== "all" && event.type !== typeFilter) return false;
-		if (monthFilter !== "all" && event.month !== monthFilter) return false;
+		if (monthFilter !== "all" && event.date !== monthFilter) return false;
 		return true;
 	});
 
-	const months = [...new Set(auditEvents.map(e => e.month))];
+	const months = [...new Set(auditEvents.map(e => e.date))];
 	const types = [...new Set(auditEvents.map(e => e.type))];
 
 	return (
@@ -216,9 +216,9 @@ export default function LogsAudit() {
 											<p className="text-sm font-medium text-slate-900">
 												{event.description}
 											</p>
-											{event.ticker && (
+											{event.symbol && (
 												<Badge variant="outline" className="text-xs">
-													{event.ticker}
+													{event.symbol}
 												</Badge>
 											)}
 										</div>
@@ -231,7 +231,7 @@ export default function LogsAudit() {
 											<span>•</span>
 											<span>{event.user}</span>
 											<span>•</span>
-											<span>{event.month}</span>
+											<span>{event.date}</span>
 										</div>
 
 										{event.notes && (

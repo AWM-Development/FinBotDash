@@ -60,7 +60,7 @@ export default function RebalancePacket() {
 				{/* Sidebar */}
 				<div className="space-y-6">
 					<TaxNotes />
-					<ApprovalWorkflow status="pending" />
+					<ApprovalWorkflow status="PROPOSED" />
 				</div>
 			</div>
 		</div>

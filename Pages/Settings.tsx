@@ -32,20 +32,20 @@ import {
 } from "lucide-react";
 
 interface UniverseETF {
-	ticker: string;
+	symbol: string;
 	name: string;
 	assetClass: string;
 }
 
 const universeETFs: UniverseETF[] = [
-	{ ticker: "SPY", name: "S&P 500", assetClass: "Equity" },
-	{ ticker: "QQQ", name: "Nasdaq 100", assetClass: "Equity" },
-	{ ticker: "IWM", name: "Russell 2000", assetClass: "Equity" },
-	{ ticker: "EFA", name: "Intl Developed", assetClass: "Equity" },
-	{ ticker: "VNQ", name: "Real Estate", assetClass: "Real Assets" },
-	{ ticker: "TLT", name: "Long-Term Treasury", assetClass: "Bonds" },
-	{ ticker: "IEF", name: "Intermediate Treasury", assetClass: "Bonds" },
-	{ ticker: "SHY", name: "Short-Term Treasury", assetClass: "Cash" },
+	{ symbol: "SPY", name: "S&P 500", assetClass: "Equity" },
+	{ symbol: "QQQ", name: "Nasdaq 100", assetClass: "Equity" },
+	{ symbol: "IWM", name: "Russell 2000", assetClass: "Equity" },
+	{ symbol: "EFA", name: "Intl Developed", assetClass: "Equity" },
+	{ symbol: "VNQ", name: "Real Estate", assetClass: "Real Assets" },
+	{ symbol: "TLT", name: "Long-Term Treasury", assetClass: "Bonds" },
+	{ symbol: "IEF", name: "Intermediate Treasury", assetClass: "Bonds" },
+	{ symbol: "SHY", name: "Short-Term Treasury", assetClass: "Cash" },
 ];
 
 export default function Settings() {
@@ -225,8 +225,8 @@ export default function Settings() {
 						</TableHeader>
 						<TableBody>
 							{universeETFs.map((etf) => (
-								<TableRow key={etf.ticker}>
-									<TableCell className="font-semibold text-slate-900">{etf.ticker}</TableCell>
+								<TableRow key={etf.symbol}>
+									<TableCell className="font-semibold text-slate-900">{etf.symbol}</TableCell>
 									<TableCell className="text-slate-600">{etf.name}</TableCell>
 									<TableCell>
 										<Badge variant="outline" className="text-xs">

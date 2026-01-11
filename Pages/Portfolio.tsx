@@ -15,7 +15,7 @@ import { TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import MetricCard from "@/components/shared/MetricCard";
 
 interface Holding {
-	ticker: string;
+	symbol: string;
 	name: string;
 	shares: number;
 	value: number;
@@ -31,10 +31,10 @@ interface PieDataPoint {
 }
 
 const holdings: Holding[] = [
-	{ ticker: "QQQ", name: "Nasdaq 100", shares: 85, value: 43520, costBasis: 38200, assetClass: "equity" },
-	{ ticker: "SPY", name: "S&P 500", shares: 92, value: 44160, costBasis: 41000, assetClass: "equity" },
-	{ ticker: "VNQ", name: "Real Estate", shares: 420, value: 31080, costBasis: 32500, assetClass: "real_assets" },
-	{ ticker: "SHY", name: "Short-Term Treasury", shares: 78, value: 6510, costBasis: 6400, assetClass: "cash" },
+	{ symbol: "QQQ", name: "Nasdaq 100", shares: 85, value: 43520, costBasis: 38200, assetClass: "equity" },
+	{ symbol: "SPY", name: "S&P 500", shares: 92, value: 44160, costBasis: 41000, assetClass: "equity" },
+	{ symbol: "VNQ", name: "Real Estate", shares: 420, value: 31080, costBasis: 32500, assetClass: "real_assets" },
+	{ symbol: "SHY", name: "Short-Term Treasury", shares: 78, value: 6510, costBasis: 6400, assetClass: "cash" },
 ];
 
 const assetClassColors: Record<string, string> = {
@@ -72,7 +72,7 @@ export default function Portfolio() {
 	}));
 
 	const tickerPieData: PieDataPoint[] = holdings.map(h => ({
-		name: h.ticker,
+		name: h.symbol,
 		value: ((h.value / totalValue) * 100).toFixed(1),
 		rawValue: h.value,
 		color: assetClassColors[h.assetClass]
@@ -147,9 +147,9 @@ export default function Portfolio() {
 									const gainLoss = holding.value - holding.costBasis;
 									const gainLossPercent = ((gainLoss / holding.costBasis) * 100).toFixed(1);
 									return (
-										<TableRow key={holding.ticker}>
+										<TableRow key={holding.symbol}>
 											<TableCell className="font-semibold text-slate-900">
-												{holding.ticker}
+												{holding.symbol}
 											</TableCell>
 											<TableCell className="text-slate-600">{holding.name}</TableCell>
 											<TableCell>{holding.shares}</TableCell>

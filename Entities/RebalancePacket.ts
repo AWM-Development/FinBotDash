@@ -1,29 +1,30 @@
-export type RebalancePacketStatus = "pending" | "reviewed" | "approved" | "executed";
+export type RebalancePacketStatus = "PROPOSED" | "APPROVED" | "EXECUTED" | "CANCELED";
 
 export interface TargetAllocation {
-	ticker: string;
+	symbol: string;
 	target_weight: number;
 	current_weight: number;
 }
 
 export interface ProposedTrade {
-	action: "Buy" | "Sell";
-	ticker: string;
-	amount: number;
+	action: "BUY" | "SELL";
+	symbol: string;
 	shares: number;
+	price: number;
+	amount: number;
 	reason?: string;
 	notes?: string;
 }
 
 export interface TaxNotes {
 	tlh_opportunities?: Array<{
-		ticker: string;
+		symbol: string;
 		unrealized_loss: number;
-		replacement: string;
+		replacement?: string;
 		estimated_savings: number;
 	}>;
 	wash_sale_warnings?: Array<{
-		ticker: string;
+		symbol: string;
 		sold_date: string;
 		end_date: string;
 		days_remaining: number;
@@ -39,20 +40,22 @@ export interface AIExplanation {
 }
 
 export interface RebalancePacket {
-	id?: number;
-	month: string;
-	strategy_id?: string;
-	status?: RebalancePacketStatus;
-	target_allocations?: TargetAllocation[];
+	id?: string;
+	date: string;
+	strategy_id: string;
+	status: RebalancePacketStatus;
+	target_allocations: TargetAllocation[];
 	proposed_trades?: ProposedTrade[];
 	tax_notes?: TaxNotes;
 	ai_explanation?: AIExplanation;
 	regime?: string;
-	risk_posture?: string;
+	confidence?: number;
+	expected_turnover?: number;
+	human_notes?: string;
 	reviewed_at?: string;
 	approved_at?: string;
-	reviewer_notes?: string;
-	generated_at?: string;
+	executed_at?: string;
+	created_at: string;
 }
 
 /**
@@ -65,12 +68,12 @@ export function validateRebalancePacket(packet: unknown): packet is RebalancePac
 
 	const p = packet as Partial<RebalancePacket>;
 
-	if (!p.month || typeof p.month !== "string") {
+	if (!p.date || typeof p.date !== "string") {
 		return false;
 	}
 
 	if (p.status !== undefined) {
-		const validStatuses: RebalancePacketStatus[] = ["pending", "reviewed", "approved", "executed"];
+		const validStatuses: RebalancePacketStatus[] = ["PROPOSED", "APPROVED", "EXECUTED", "CANCELED"];
 		if (!validStatuses.includes(p.status)) {
 			return false;
 		}
@@ -82,13 +85,13 @@ export function validateRebalancePacket(packet: unknown): packet is RebalancePac
 
 	if (p.target_allocations) {
 		for (const alloc of p.target_allocations) {
-			if (!alloc.ticker || typeof alloc.ticker !== "string") {
+			if (!alloc.symbol || typeof alloc.symbol !== "string") {
 				return false;
 			}
-			if (typeof alloc.target_weight !== "number" || alloc.target_weight < 0 || alloc.target_weight > 100) {
+			if (typeof alloc.target_weight !== "number" || alloc.target_weight < 0 || alloc.target_weight > 1) {
 				return false;
 			}
-			if (typeof alloc.current_weight !== "number" || alloc.current_weight < 0 || alloc.current_weight > 100) {
+			if (typeof alloc.current_weight !== "number" || alloc.current_weight < 0 || alloc.current_weight > 1) {
 				return false;
 			}
 		}
@@ -100,10 +103,10 @@ export function validateRebalancePacket(packet: unknown): packet is RebalancePac
 
 	if (p.proposed_trades) {
 		for (const trade of p.proposed_trades) {
-			if (trade.action !== "Buy" && trade.action !== "Sell") {
+			if (trade.action !== "BUY" && trade.action !== "SELL") {
 				return false;
 			}
-			if (!trade.ticker || typeof trade.ticker !== "string") {
+			if (!trade.symbol || typeof trade.symbol !== "string") {
 				return false;
 			}
 			if (typeof trade.amount !== "number" || trade.amount < 0) {
@@ -122,13 +125,16 @@ export function validateRebalancePacket(packet: unknown): packet is RebalancePac
  * Creates a new RebalancePacket
  */
 export function createRebalancePacket(
-	month: string,
-	options?: Partial<Omit<RebalancePacket, "month">>
+	date: string,
+	strategy_id: string,
+	options?: Partial<Omit<RebalancePacket, "date" | "strategy_id">>
 ): RebalancePacket {
 	const packet: RebalancePacket = {
-		month,
-		status: "pending",
-		generated_at: new Date().toISOString(),
+		date,
+		strategy_id,
+		status: "PROPOSED",
+		target_allocations: [],
+		created_at: new Date().toISOString(),
 		...options,
 	};
 
@@ -148,7 +154,7 @@ export function calculateTotalTradeAmount(packet: RebalancePacket): number {
 	}
 
 	return packet.proposed_trades.reduce((total, trade) => {
-		return total + (trade.action === "Buy" ? trade.amount : -trade.amount);
+		return total + (trade.action === "BUY" ? trade.amount : -trade.amount);
 	}, 0);
 }
 
@@ -162,7 +168,7 @@ export function getTradeCountsByAction(packet: RebalancePacket): { buy: number; 
 
 	return packet.proposed_trades.reduce(
 		(counts, trade) => {
-			if (trade.action === "Buy") {
+			if (trade.action === "BUY") {
 				counts.buy++;
 			} else {
 				counts.sell++;

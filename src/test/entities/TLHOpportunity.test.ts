@@ -14,7 +14,7 @@ describe('TLHOpportunity', () => {
 	describe('validateTLHOpportunity', () => {
 		it('should validate a valid TLH opportunity', () => {
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 			};
 
@@ -28,7 +28,7 @@ describe('TLHOpportunity', () => {
 			expect(validateTLHOpportunity(123)).toBe(false);
 		});
 
-		it('should reject missing ticker', () => {
+		it('should reject missing symbol', () => {
 			const opportunity = {
 				unrealized_loss: -1240,
 			};
@@ -38,7 +38,7 @@ describe('TLHOpportunity', () => {
 
 		it('should reject missing unrealized_loss', () => {
 			const opportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 			};
 
 			expect(validateTLHOpportunity(opportunity)).toBe(false);
@@ -46,7 +46,7 @@ describe('TLHOpportunity', () => {
 
 		it('should reject non-negative unrealized_loss', () => {
 			const opportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: 1240, // should be negative
 			};
 
@@ -55,7 +55,7 @@ describe('TLHOpportunity', () => {
 
 		it('should reject invalid status', () => {
 			const opportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				status: 'invalid_status' as TLHStatus,
 			};
@@ -68,7 +68,7 @@ describe('TLHOpportunity', () => {
 
 			validStatuses.forEach((status) => {
 				const opportunity: TLHOpportunity = {
-					ticker: 'VTI',
+					symbol: 'VTI',
 					unrealized_loss: -1240,
 					status,
 				};
@@ -77,11 +77,11 @@ describe('TLHOpportunity', () => {
 			});
 		});
 
-		it('should reject invalid replacement_ticker type', () => {
+		it('should reject invalid replacement_symbol type', () => {
 			const opportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
-				replacement_ticker: 123, // should be string
+				replacement_symbol: 123, // should be string
 			};
 
 			expect(validateTLHOpportunity(opportunity)).toBe(false);
@@ -89,7 +89,7 @@ describe('TLHOpportunity', () => {
 
 		it('should reject invalid estimated_savings (negative)', () => {
 			const opportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				estimated_savings: -100,
 			};
@@ -99,7 +99,7 @@ describe('TLHOpportunity', () => {
 
 		it('should reject invalid tax_bracket (out of range)', () => {
 			const opportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				tax_bracket: 150, // should be 0-100
 			};
@@ -109,7 +109,7 @@ describe('TLHOpportunity', () => {
 
 		it('should reject invalid tax_bracket (negative)', () => {
 			const opportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				tax_bracket: -10,
 			};
@@ -123,7 +123,7 @@ describe('TLHOpportunity', () => {
 			const opportunity = createTLHOpportunity('VTI', -1240);
 
 			expect(validateTLHOpportunity(opportunity)).toBe(true);
-			expect(opportunity.ticker).toBe('VTI');
+			expect(opportunity.symbol).toBe('VTI');
 			expect(opportunity.unrealized_loss).toBe(-1240);
 			expect(opportunity.status).toBe('available');
 			expect(opportunity.detected_at).toBeDefined();
@@ -139,14 +139,14 @@ describe('TLHOpportunity', () => {
 
 		it('should create opportunity with optional fields', () => {
 			const opportunity = createTLHOpportunity('VTI', -1240, {
-				replacement_ticker: 'ITOT',
+				replacement_symbol: 'ITOT',
 				wash_sale_end_date: '2026-02-15',
 				status: 'added_to_packet',
 				notes: 'TLH opportunity',
 				tax_bracket: 28,
 			});
 
-			expect(opportunity.replacement_ticker).toBe('ITOT');
+			expect(opportunity.replacement_symbol).toBe('ITOT');
 			expect(opportunity.wash_sale_end_date).toBe('2026-02-15');
 			expect(opportunity.status).toBe('added_to_packet');
 			expect(opportunity.notes).toBe('TLH opportunity');
@@ -190,7 +190,7 @@ describe('TLHOpportunity', () => {
 	describe('isTLHOpportunityAvailable', () => {
 		it('should return false for executed opportunities', () => {
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				status: 'executed',
 			};
@@ -200,7 +200,7 @@ describe('TLHOpportunity', () => {
 
 		it('should return false for expired opportunities', () => {
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				status: 'expired',
 			};
@@ -210,7 +210,7 @@ describe('TLHOpportunity', () => {
 
 		it('should return false if unrealized_loss is positive', () => {
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: 1240, // positive
 				status: 'available',
 			};
@@ -223,7 +223,7 @@ describe('TLHOpportunity', () => {
 			futureDate.setDate(futureDate.getDate() + 5); // 5 days from now
 
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				status: 'available',
 				wash_sale_end_date: futureDate.toISOString().split('T')[0],
@@ -234,7 +234,7 @@ describe('TLHOpportunity', () => {
 
 		it('should return true for available opportunities', () => {
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				status: 'available',
 			};
@@ -244,7 +244,7 @@ describe('TLHOpportunity', () => {
 
 		it('should return true for added_to_packet opportunities', () => {
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				status: 'added_to_packet',
 			};
@@ -256,7 +256,7 @@ describe('TLHOpportunity', () => {
 	describe('isTLHOpportunityExpired', () => {
 		it('should return true if unrealized_loss is positive', () => {
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: 1240, // positive
 			};
 
@@ -268,7 +268,7 @@ describe('TLHOpportunity', () => {
 			pastDate.setDate(pastDate.getDate() - 5); // 5 days ago
 
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				wash_sale_end_date: pastDate.toISOString().split('T')[0],
 			};
@@ -281,7 +281,7 @@ describe('TLHOpportunity', () => {
 			futureDate.setDate(futureDate.getDate() + 5); // 5 days from now
 
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				wash_sale_end_date: futureDate.toISOString().split('T')[0],
 			};
@@ -291,7 +291,7 @@ describe('TLHOpportunity', () => {
 
 		it('should return false for valid opportunities without wash sale date', () => {
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 			};
 
@@ -310,7 +310,7 @@ describe('TLHOpportunity', () => {
 
 		it('should return null if no wash sale end date', () => {
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 			};
 
@@ -321,7 +321,7 @@ describe('TLHOpportunity', () => {
 			vi.setSystemTime(new Date('2026-01-15'));
 
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				wash_sale_end_date: '2026-01-20', // 5 days from now
 			};
@@ -333,7 +333,7 @@ describe('TLHOpportunity', () => {
 			vi.setSystemTime(new Date('2026-01-20'));
 
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				wash_sale_end_date: '2026-01-15', // 5 days ago
 			};
@@ -345,7 +345,7 @@ describe('TLHOpportunity', () => {
 			vi.setSystemTime(new Date('2026-01-15'));
 
 			const opportunity: TLHOpportunity = {
-				ticker: 'VTI',
+				symbol: 'VTI',
 				unrealized_loss: -1240,
 				wash_sale_end_date: '2026-01-15', // today
 			};

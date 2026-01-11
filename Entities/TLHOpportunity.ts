@@ -2,9 +2,9 @@ export type TLHStatus = "available" | "added_to_packet" | "executed" | "expired"
 
 export interface TLHOpportunity {
 	id?: number;
-	ticker: string;
+	symbol: string;
 	unrealized_loss: number;
-	replacement_ticker?: string;
+	replacement_symbol?: string;
 	wash_sale_end_date?: string;
 	status?: TLHStatus;
 	notes?: string;
@@ -23,7 +23,7 @@ export function validateTLHOpportunity(opportunity: unknown): opportunity is TLH
 
 	const opp = opportunity as Partial<TLHOpportunity>;
 
-	if (!opp.ticker || typeof opp.ticker !== "string") {
+	if (!opp.symbol || typeof opp.symbol !== "string") {
 		return false;
 	}
 
@@ -31,7 +31,7 @@ export function validateTLHOpportunity(opportunity: unknown): opportunity is TLH
 		return false;
 	}
 
-	if (opp.replacement_ticker !== undefined && (opp.replacement_ticker === null || typeof opp.replacement_ticker !== "string")) {
+	if (opp.replacement_symbol !== undefined && (opp.replacement_symbol === null || typeof opp.replacement_symbol !== "string")) {
 		return false;
 	}
 
@@ -65,12 +65,12 @@ export function validateTLHOpportunity(opportunity: unknown): opportunity is TLH
  * Creates a new TLHOpportunity
  */
 export function createTLHOpportunity(
-	ticker: string,
+	symbol: string,
 	unrealizedLoss: number,
-	options?: Partial<Omit<TLHOpportunity, "ticker" | "unrealized_loss">>
+	options?: Partial<Omit<TLHOpportunity, "symbol" | "unrealized_loss">>
 ): TLHOpportunity {
 	const opportunity: TLHOpportunity = {
-		ticker,
+		symbol,
 		unrealized_loss: unrealizedLoss,
 		status: "available",
 		detected_at: new Date().toISOString(),

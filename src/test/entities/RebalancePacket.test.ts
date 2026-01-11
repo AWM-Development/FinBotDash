@@ -14,7 +14,11 @@ describe('RebalancePacket', () => {
 	describe('validateRebalancePacket', () => {
 		it('should validate a valid rebalance packet', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
+				target_allocations: [],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			expect(validateRebalancePacket(packet)).toBe(true);
@@ -27,9 +31,9 @@ describe('RebalancePacket', () => {
 			expect(validateRebalancePacket(123)).toBe(false);
 		});
 
-		it('should reject missing month', () => {
+		it('should reject missing date', () => {
 			const packet = {
-				status: 'pending',
+				status: 'PROPOSED',
 			};
 
 			expect(validateRebalancePacket(packet)).toBe(false);
@@ -37,7 +41,7 @@ describe('RebalancePacket', () => {
 
 		it('should reject invalid status', () => {
 			const packet = {
-				month: 'January 2026',
+				date: '2026-01-11',
 				status: 'invalid_status' as RebalancePacketStatus,
 			};
 
@@ -45,12 +49,15 @@ describe('RebalancePacket', () => {
 		});
 
 		it('should validate all valid statuses', () => {
-			const validStatuses: RebalancePacketStatus[] = ['pending', 'reviewed', 'approved', 'executed'];
+			const validStatuses: RebalancePacketStatus[] = ['PROPOSED', 'APPROVED', 'EXECUTED', 'CANCELED'];
 
 			validStatuses.forEach((status) => {
 				const packet: RebalancePacket = {
-					month: 'January 2026',
+					date: '2026-01-11',
+					strategy_id: 'test-strategy',
 					status,
+					target_allocations: [],
+					created_at: '2026-01-11T10:00:00Z',
 				};
 
 				expect(validateRebalancePacket(packet)).toBe(true);
@@ -59,11 +66,14 @@ describe('RebalancePacket', () => {
 
 		it('should validate target allocations', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
 				target_allocations: [
-					{ ticker: 'SPY', target_weight: 33.33, current_weight: 35.2 },
-					{ ticker: 'QQQ', target_weight: 33.33, current_weight: 28.5 },
+					{ symbol: 'SPY', target_weight: 0.333, current_weight: 0.352 },
+					{ symbol: 'QQQ', target_weight: 0.333, current_weight: 0.285 },
 				],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			expect(validateRebalancePacket(packet)).toBe(true);
@@ -71,20 +81,20 @@ describe('RebalancePacket', () => {
 
 		it('should reject invalid target allocations', () => {
 			const packet = {
-				month: 'January 2026',
+				date: '2026-01-11',
 				target_allocations: [
-					{ ticker: 'SPY', target_weight: 150, current_weight: 35.2 }, // invalid weight > 100
+					{ symbol: 'SPY', target_weight: 1.5, current_weight: 0.352 }, // invalid weight > 1
 				],
 			};
 
 			expect(validateRebalancePacket(packet)).toBe(false);
 		});
 
-		it('should reject target allocations without ticker', () => {
+		it('should reject target allocations without symbol', () => {
 			const packet = {
-				month: 'January 2026',
+				date: '2026-01-11',
 				target_allocations: [
-					{ target_weight: 33.33, current_weight: 35.2 },
+					{ target_weight: 0.333, current_weight: 0.352 },
 				],
 			};
 
@@ -93,11 +103,15 @@ describe('RebalancePacket', () => {
 
 		it('should validate proposed trades', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
+				target_allocations: [],
 				proposed_trades: [
-					{ action: 'Buy', ticker: 'QQQ', amount: 6000, shares: 12, reason: 'Rebalance' },
-					{ action: 'Sell', ticker: 'IWM', amount: 4000, shares: 20, reason: 'Regime shift' },
+					{ action: 'BUY', symbol: 'QQQ', amount: 6000, shares: 12, price: 500 },
+					{ action: 'SELL', symbol: 'IWM', amount: 4000, shares: 20, price: 200, reason: 'Regime shift' },
 				],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			expect(validateRebalancePacket(packet)).toBe(true);
@@ -105,20 +119,20 @@ describe('RebalancePacket', () => {
 
 		it('should reject invalid trade action', () => {
 			const packet = {
-				month: 'January 2026',
+				date: '2026-01-11',
 				proposed_trades: [
-					{ action: 'Invalid', ticker: 'QQQ', amount: 6000, shares: 12 },
+					{ action: 'Invalid', symbol: 'QQQ', amount: 6000, shares: 12, price: 500 },
 				],
 			};
 
 			expect(validateRebalancePacket(packet)).toBe(false);
 		});
 
-		it('should reject trades without ticker', () => {
+		it('should reject trades without symbol', () => {
 			const packet = {
-				month: 'January 2026',
+				date: '2026-01-11',
 				proposed_trades: [
-					{ action: 'Buy', amount: 6000, shares: 12 },
+					{ action: 'BUY', amount: 6000, shares: 12, price: 500 },
 				],
 			};
 
@@ -127,9 +141,9 @@ describe('RebalancePacket', () => {
 
 		it('should reject trades with negative amount', () => {
 			const packet = {
-				month: 'January 2026',
+				date: '2026-01-11',
 				proposed_trades: [
-					{ action: 'Buy', ticker: 'QQQ', amount: -1000, shares: 12 },
+					{ action: 'BUY', symbol: 'QQQ', amount: -1000, shares: 12, price: 500 },
 				],
 			};
 
@@ -138,9 +152,9 @@ describe('RebalancePacket', () => {
 
 		it('should reject trades with zero or negative shares', () => {
 			const packet = {
-				month: 'January 2026',
+				date: '2026-01-11',
 				proposed_trades: [
-					{ action: 'Buy', ticker: 'QQQ', amount: 6000, shares: 0 },
+					{ action: 'BUY', symbol: 'QQQ', amount: 6000, shares: 0, price: 500 },
 				],
 			};
 
@@ -150,42 +164,47 @@ describe('RebalancePacket', () => {
 
 	describe('createRebalancePacket', () => {
 		it('should create a valid rebalance packet with required fields', () => {
-			const packet = createRebalancePacket('January 2026');
+			const packet = createRebalancePacket('2026-01-11', 'test-strategy');
 
 			expect(validateRebalancePacket(packet)).toBe(true);
-			expect(packet.month).toBe('January 2026');
-			expect(packet.status).toBe('pending');
-			expect(packet.generated_at).toBeDefined();
+			expect(packet.date).toBe('2026-01-11');
+			expect(packet.strategy_id).toBe('test-strategy');
+			expect(packet.status).toBe('PROPOSED');
+			expect(packet.created_at).toBeDefined();
 		});
 
 		it('should create packet with optional fields', () => {
 			const targetAllocations: TargetAllocation[] = [
-				{ ticker: 'SPY', target_weight: 33.33, current_weight: 35.2 },
+				{ symbol: 'SPY', target_weight: 0.333, current_weight: 0.352 },
 			];
 			const proposedTrades: ProposedTrade[] = [
-				{ action: 'Buy', ticker: 'QQQ', amount: 6000, shares: 12 },
+				{ action: 'BUY', symbol: 'QQQ', amount: 6000, shares: 12, price: 500 },
 			];
 
-			const packet = createRebalancePacket('January 2026', {
-				strategy_id: 'baseline-v1',
-				status: 'reviewed',
+			const packet = createRebalancePacket('2026-01-11', 'baseline-v1', {
+				status: 'APPROVED',
 				target_allocations: targetAllocations,
 				proposed_trades: proposedTrades,
-				regime: 'Risk-On',
+				regime: 'TRENDING_RISK_ON',
+				confidence: 0.85,
 			});
 
-			expect(packet.strategy_id).toBe('baseline-v1');
-			expect(packet.status).toBe('reviewed');
+			expect(packet.status).toBe('APPROVED');
 			expect(packet.target_allocations).toEqual(targetAllocations);
 			expect(packet.proposed_trades).toEqual(proposedTrades);
-			expect(packet.regime).toBe('Risk-On');
+			expect(packet.regime).toBe('TRENDING_RISK_ON');
+			expect(packet.confidence).toBe(0.85);
 		});
 	});
 
 	describe('calculateTotalTradeAmount', () => {
 		it('should return 0 for packet without trades', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
+				target_allocations: [],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			expect(calculateTotalTradeAmount(packet)).toBe(0);
@@ -193,12 +212,16 @@ describe('RebalancePacket', () => {
 
 		it('should calculate total trade amount (buys positive, sells negative)', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
+				target_allocations: [],
 				proposed_trades: [
-					{ action: 'Buy', ticker: 'QQQ', amount: 6000, shares: 12 },
-					{ action: 'Sell', ticker: 'IWM', amount: 4000, shares: 20 },
-					{ action: 'Buy', ticker: 'VNQ', amount: 2000, shares: 30 },
+					{ action: 'BUY', symbol: 'QQQ', amount: 6000, shares: 12, price: 500 },
+					{ action: 'SELL', symbol: 'IWM', amount: 4000, shares: 20, price: 200 },
+					{ action: 'BUY', symbol: 'VNQ', amount: 2000, shares: 30, price: 66.67 },
 				],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			expect(calculateTotalTradeAmount(packet)).toBe(4000); // 6000 - 4000 + 2000
@@ -206,11 +229,15 @@ describe('RebalancePacket', () => {
 
 		it('should handle only buys', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
+				target_allocations: [],
 				proposed_trades: [
-					{ action: 'Buy', ticker: 'QQQ', amount: 6000, shares: 12 },
-					{ action: 'Buy', ticker: 'VNQ', amount: 2000, shares: 30 },
+					{ action: 'BUY', symbol: 'QQQ', amount: 6000, shares: 12, price: 500 },
+					{ action: 'BUY', symbol: 'VNQ', amount: 2000, shares: 30, price: 66.67 },
 				],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			expect(calculateTotalTradeAmount(packet)).toBe(8000);
@@ -218,11 +245,15 @@ describe('RebalancePacket', () => {
 
 		it('should handle only sells', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
+				target_allocations: [],
 				proposed_trades: [
-					{ action: 'Sell', ticker: 'IWM', amount: 4000, shares: 20 },
-					{ action: 'Sell', ticker: 'VNQ', amount: 2000, shares: 30 },
+					{ action: 'SELL', symbol: 'IWM', amount: 4000, shares: 20, price: 200 },
+					{ action: 'SELL', symbol: 'VNQ', amount: 2000, shares: 30, price: 66.67 },
 				],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			expect(calculateTotalTradeAmount(packet)).toBe(-6000);
@@ -232,7 +263,11 @@ describe('RebalancePacket', () => {
 	describe('getTradeCountsByAction', () => {
 		it('should return zeros for packet without trades', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
+				target_allocations: [],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			const counts = getTradeCountsByAction(packet);
@@ -242,12 +277,16 @@ describe('RebalancePacket', () => {
 
 		it('should count trades by action', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
+				target_allocations: [],
 				proposed_trades: [
-					{ action: 'Buy', ticker: 'QQQ', amount: 6000, shares: 12 },
-					{ action: 'Buy', ticker: 'VNQ', amount: 2000, shares: 30 },
-					{ action: 'Sell', ticker: 'IWM', amount: 4000, shares: 20 },
+					{ action: 'BUY', symbol: 'QQQ', amount: 6000, shares: 12, price: 500 },
+					{ action: 'BUY', symbol: 'VNQ', amount: 2000, shares: 30, price: 66.67 },
+					{ action: 'SELL', symbol: 'IWM', amount: 4000, shares: 20, price: 200 },
 				],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			const counts = getTradeCountsByAction(packet);
@@ -257,11 +296,15 @@ describe('RebalancePacket', () => {
 
 		it('should handle only buys', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
+				target_allocations: [],
 				proposed_trades: [
-					{ action: 'Buy', ticker: 'QQQ', amount: 6000, shares: 12 },
-					{ action: 'Buy', ticker: 'VNQ', amount: 2000, shares: 30 },
+					{ action: 'BUY', symbol: 'QQQ', amount: 6000, shares: 12, price: 500 },
+					{ action: 'BUY', symbol: 'VNQ', amount: 2000, shares: 30, price: 66.67 },
 				],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			const counts = getTradeCountsByAction(packet);
@@ -271,11 +314,15 @@ describe('RebalancePacket', () => {
 
 		it('should handle only sells', () => {
 			const packet: RebalancePacket = {
-				month: 'January 2026',
+				date: '2026-01-11',
+				strategy_id: 'test-strategy',
+				status: 'PROPOSED',
+				target_allocations: [],
 				proposed_trades: [
-					{ action: 'Sell', ticker: 'IWM', amount: 4000, shares: 20 },
-					{ action: 'Sell', ticker: 'VNQ', amount: 2000, shares: 30 },
+					{ action: 'SELL', symbol: 'IWM', amount: 4000, shares: 20, price: 200 },
+					{ action: 'SELL', symbol: 'VNQ', amount: 2000, shares: 30, price: 66.67 },
 				],
+				created_at: '2026-01-11T10:00:00Z',
 			};
 
 			const counts = getTradeCountsByAction(packet);

@@ -12,8 +12,8 @@ import {
 import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 
 interface Trade {
-	action: "Buy" | "Sell";
-	ticker: string;
+	action: "BUY" | "SELL";
+	symbol: string;
 	amount: number;
 	shares: number;
 	reason: string;
@@ -22,24 +22,24 @@ interface Trade {
 
 const trades: Trade[] = [
 	{
-		action: "Buy",
-		ticker: "QQQ",
+		action: "BUY",
+		symbol: "QQQ",
 		amount: 6150,
 		shares: 12,
 		reason: "Rebalance",
 		notes: "Use limit order near midpoint spread"
 	},
 	{
-		action: "Sell",
-		ticker: "IWM",
+		action: "SELL",
+		symbol: "IWM",
 		amount: 4200,
 		shares: 20,
 		reason: "Regime shift",
 		notes: "Consider tax lot selection"
 	},
 	{
-		action: "Buy",
-		ticker: "VNQ",
+		action: "BUY",
+		symbol: "VNQ",
 		amount: 2800,
 		shares: 32,
 		reason: "Risk scaling",
@@ -78,19 +78,19 @@ export default function ProposedTrades() {
 						<TableRow key={index}>
 							<TableCell>
 								<div className="flex items-center gap-2">
-									{trade.action === "Buy" ? (
+									{trade.action === "BUY" ? (
 										<ArrowUpCircle className="w-5 h-5 text-emerald-500" />
 									) : (
 										<ArrowDownCircle className="w-5 h-5 text-rose-500" />
 									)}
-									<span className={`font-medium ${trade.action === "Buy" ? "text-emerald-700" : "text-rose-700"
+									<span className={`font-medium ${trade.action === "BUY" ? "text-emerald-700" : "text-rose-700"
 										}`}>
 										{trade.action}
 									</span>
 								</div>
 							</TableCell>
 							<TableCell className="font-semibold text-slate-900">
-								{trade.ticker}
+								{trade.symbol}
 							</TableCell>
 							<TableCell className="font-medium">
 								${trade.amount.toLocaleString()}
