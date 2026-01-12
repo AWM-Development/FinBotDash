@@ -14,12 +14,29 @@ import {
 } from "@/components/ui/dialog";
 import { Check, FileCheck, Download, AlertTriangle, MessageSquare, Clock, User } from "lucide-react";
 
+type WorkflowStatus = "PROPOSED" | "APPROVED" | "EXECUTED" | "CANCELED";
+type InternalStatus = "pending" | "reviewed" | "approved";
+
 interface ApprovalWorkflowProps {
-	status?: "pending" | "reviewed" | "approved";
+	status?: WorkflowStatus;
 }
 
-export default function ApprovalWorkflow({ status = "pending" }: ApprovalWorkflowProps) {
-	const [currentStatus, setCurrentStatus] = useState<"pending" | "reviewed" | "approved">(status);
+function mapStatusToInternal(status: WorkflowStatus): InternalStatus {
+	switch (status) {
+		case "PROPOSED":
+			return "pending";
+		case "APPROVED":
+		case "EXECUTED":
+			return "approved";
+		case "CANCELED":
+			return "pending";
+		default:
+			return "pending";
+	}
+}
+
+export default function ApprovalWorkflow({ status = "PROPOSED" }: ApprovalWorkflowProps) {
+	const [currentStatus, setCurrentStatus] = useState<InternalStatus>(mapStatusToInternal(status));
 	const [notes, setNotes] = useState<string>("");
 	const [deviationReason, setDeviationReason] = useState<string>("");
 	const [showDeviation, setShowDeviation] = useState<boolean>(false);

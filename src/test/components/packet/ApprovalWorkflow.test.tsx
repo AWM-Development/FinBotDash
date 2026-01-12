@@ -12,34 +12,28 @@ describe('ApprovalWorkflow', () => {
 		expect(screen.getByText('Pending')).toBeInTheDocument();
 	});
 
-	it('should render with reviewed status', () => {
-		render(<ApprovalWorkflow status="reviewed" />);
-
-		expect(screen.getByText('Reviewed')).toBeInTheDocument();
-	});
-
 	it('should render with approved status', () => {
-		render(<ApprovalWorkflow status="approved" />);
+		render(<ApprovalWorkflow status="APPROVED" />);
 
 		expect(screen.getByText('Approved')).toBeInTheDocument();
 	});
 
-	it('should enable review button when pending', () => {
-		render(<ApprovalWorkflow status="pending" />);
+	it('should enable review button when proposed', () => {
+		render(<ApprovalWorkflow status="PROPOSED" />);
 
 		const reviewButton = screen.getByRole('button', { name: /mark as reviewed/i });
 		expect(reviewButton).not.toBeDisabled();
 	});
 
-	it('should disable review button when reviewed', () => {
-		render(<ApprovalWorkflow status="reviewed" />);
+	it('should disable review button when approved', () => {
+		render(<ApprovalWorkflow status="APPROVED" />);
 
 		const reviewButton = screen.getByRole('button', { name: /mark as reviewed/i });
 		expect(reviewButton).toBeDisabled();
 	});
 
 	it('should disable approve button when not reviewed', () => {
-		render(<ApprovalWorkflow status="pending" />);
+		render(<ApprovalWorkflow status="PROPOSED" />);
 
 		const approveButton = screen.getByRole('button', { name: /approve packet/i });
 		expect(approveButton).toBeDisabled();
@@ -47,7 +41,7 @@ describe('ApprovalWorkflow', () => {
 
 	it('should enable approve button when reviewed', async () => {
 		const user = userEvent.setup();
-		render(<ApprovalWorkflow status="pending" />);
+		render(<ApprovalWorkflow status="PROPOSED" />);
 
 		const reviewButton = screen.getByRole('button', { name: /mark as reviewed/i });
 		await user.click(reviewButton);
@@ -60,7 +54,7 @@ describe('ApprovalWorkflow', () => {
 
 	it('should handle approval workflow', async () => {
 		const user = userEvent.setup();
-		render(<ApprovalWorkflow status="pending" />);
+		render(<ApprovalWorkflow status="PROPOSED" />);
 
 		// Step 1: Mark as reviewed
 		const reviewButton = screen.getByRole('button', { name: /mark as reviewed/i });
